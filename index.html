@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Doces &amp; Companhia — Bolos por encomenda</title>
+  <meta name="description" content="Pastelaria artesanal. Encomende o seu bolo online e acompanhe a encomenda até à sua porta.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Nunito:wght@400;600;700&display=swap">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍰</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/dados.js" defer></script>
+  <script src="js/inicio.js" defer></script>
+  <script src="js/animacoes.js" defer></script>
+</head>
+<body>
+  <header class="topo">
+    <div class="contentor topo__linha">
+      <a class="logo" href="index.html">Doces <span>&amp;</span> Companhia</a>
+      <nav class="menu" aria-label="Principal">
+        <a href="#bolos">Bolos</a>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="acompanhar.html">Acompanhar encomenda</a>
+        <a class="botao botao--pequeno" href="encomendar.html">Encomendar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="destaque">
+      <div class="contentor destaque__grelha">
+        <div>
+          <p class="sobretitulo entrar">Pastelaria artesanal</p>
+          <h1 class="entrar" style="--ordem: 1">Bolos feitos com carinho, para cada ocasião.</h1>
+          <p class="destaque__texto entrar" style="--ordem: 2">Escolha o seu bolo, diga-nos o dia e a hora, e nós tratamos do resto: da cozinha até à sua porta.</p>
+          <div class="acoes entrar" style="--ordem: 3">
+            <a class="botao" href="encomendar.html">Fazer encomenda</a>
+            <a class="botao botao--secundario" href="acompanhar.html">Acompanhar encomenda</a>
+          </div>
+        </div>
+        <div class="destaque__media entrar" style="--ordem: 2">
+          <span class="destaque__bolha destaque__bolha--1" aria-hidden="true"></span>
+          <span class="destaque__bolha destaque__bolha--2" aria-hidden="true"></span>
+          <img class="destaque__foto" src="img/frutos-vermelhos.webp" width="900" height="651"
+               alt="Bolo de frutos vermelhos com framboesas, amoras e morangos">
+          <p class="destaque__selo"><span>Bolo do mês</span> Frutos vermelhos</p>
+        </div>
+      </div>
+      <svg class="onda" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 48C240 80 480 16 720 40S1200 72 1440 32V80H0Z"/></svg>
+    </section>
+
+    <ul class="contentor vantagens">
+      <li>
+        <span class="vantagens__icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>
+        </span>
+        <div><strong>Feito à mão</strong> todos os dias, na nossa cozinha.</div>
+      </li>
+      <li>
+        <span class="vantagens__icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M2 7h12v9H2zM14 10h4l3 3v3h-7"/><circle cx="6" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
+        </span>
+        <div><strong>Entrega em casa</strong> no dia e na hora que escolher.</div>
+      </li>
+      <li>
+        <span class="vantagens__icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h3"/></svg>
+        </span>
+        <div><strong>Pague como preferir:</strong> dinheiro, cartão ou MB WAY.</div>
+      </li>
+    </ul>
+
+    <section id="bolos" class="seccao">
+      <div class="contentor">
+        <p class="sobretitulo">O catálogo</p>
+        <h2>Os nossos bolos</h2>
+        <ul class="grelha-produtos" id="lista-produtos"></ul>
+      </div>
+    </section>
+
+    <section id="como-funciona" class="seccao seccao--pessego">
+      <div class="contentor">
+        <p class="sobretitulo">Simples assim</p>
+        <h2>Como funciona</h2>
+        <ol class="passos">
+          <li>
+            <span class="passos__numero">1</span>
+            <h3>Escolha o bolo</h3>
+            <p>Veja o catálogo e escolha o que lhe apetece.</p>
+          </li>
+          <li>
+            <span class="passos__numero">2</span>
+            <h3>Diga-nos quando</h3>
+            <p>Indique o dia, a hora e a morada de entrega. Recebe logo o número da encomenda.</p>
+          </li>
+          <li>
+            <span class="passos__numero">3</span>
+            <h3>Acompanhe</h3>
+            <p>Com esse número vê em que fase está: pendente, em produção, concluída ou entregue.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <svg class="onda" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40C240 8 480 72 720 48S1200 16 1440 44V80H0Z"/></svg>
+    <div class="contentor rodape__grelha">
+      <div>
+        <p class="logo">Doces <span>&amp;</span> Companhia</p>
+        <p>Encomendas aqui no site, por telefone, pelo Instagram ou na loja.</p>
+      </div>
+      <div>
+        <h2>Contactos</h2>
+        <p>Tel. 912 345 678<br>Segunda a sábado, 9h–19h</p>
+      </div>
+      <div>
+        <h2>Equipa</h2>
+        <p><a href="entrar.html">Área de funcionários</a></p>
+      </div>
+    </div>
+    <p class="contentor rodape__nota">Projeto escolar (PSI, M12): a empresa e os dados são fictícios. Fotos de domínio público (rawpixel e Flickr).</p>
+  </footer>
+
+  <template id="modelo-produto">
+    <li class="produto">
+      <div class="produto__imagem">
+        <img class="produto__foto" src="" alt="" width="900" height="600" loading="lazy">
+        <span class="produto__selo" hidden></span>
+      </div>
+      <div class="produto__corpo">
+        <h3 class="produto__nome"></h3>
+        <p class="produto__descricao"></p>
+        <div class="produto__rodape">
+          <span class="produto__preco"></span>
+          <a class="botao botao--pequeno produto__botao" href="encomendar.html">Encomendar</a>
+        </div>
+      </div>
+    </li>
+  </template>
+</body>
+</html>

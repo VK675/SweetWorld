@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acompanhar encomenda — Doces &amp; Companhia</title>
+  <meta name="description" content="Veja em que fase está a sua encomenda e quando chega.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Nunito:wght@400;600;700&display=swap">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍰</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/dados.js" defer></script>
+  <script src="js/comum.js" defer></script>
+  <script src="js/acompanhar.js" defer></script>
+  <script src="js/animacoes.js" defer></script>
+</head>
+<body>
+  <header class="topo">
+    <div class="contentor topo__linha">
+      <a class="logo" href="index.html">Doces <span>&amp;</span> Companhia</a>
+      <nav class="menu" aria-label="Principal">
+        <a href="index.html#bolos">Bolos</a>
+        <a href="index.html#como-funciona">Como funciona</a>
+        <a href="acompanhar.html" aria-current="page">Acompanhar encomenda</a>
+        <a class="botao botao--pequeno" href="encomendar.html">Encomendar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="pagina">
+    <div class="contentor estreito">
+      <p class="sobretitulo">A sua encomenda</p>
+      <h1>Acompanhar encomenda</h1>
+      <p class="pagina__intro">Escreva o número da encomenda e o telemóvel que usou ao encomendar.</p>
+
+      <form id="form-procurar" class="cartao procurar" novalidate>
+        <div class="campos-2">
+          <div class="campo" data-erro="Escreva o número da encomenda, por exemplo 1001.">
+            <label for="numero">Número da encomenda</label>
+            <input id="numero" name="numero" type="text" inputmode="numeric" pattern="\d{1,6}" placeholder="1001" required>
+            <p class="campo__erro"></p>
+          </div>
+          <div class="campo" data-erro="Escreva um telemóvel com 9 algarismos, por exemplo 912 345 678.">
+            <label for="telefone">Telemóvel</label>
+            <input id="telefone" name="telefone" type="tel" autocomplete="tel" inputmode="tel"
+                   pattern="(\+351 ?)?[29]\d{2} ?\d{3} ?\d{3}" placeholder="912 345 678" required>
+            <p class="campo__erro"></p>
+          </div>
+        </div>
+        <button class="botao" type="submit">Ver estado</button>
+      </form>
+
+      <p id="nao-encontrada" class="aviso aviso--erro" role="alert" hidden>
+        Não encontrámos nenhuma encomenda com este número e este telemóvel. Confirme os dois e tente de novo.
+      </p>
+
+      <section id="resultado" class="cartao resultado" aria-labelledby="titulo-resultado" tabindex="-1" hidden>
+        <div class="resultado__topo">
+          <h2 id="titulo-resultado">Encomenda n.º <span data-campo="numero"></span></h2>
+          <span class="etiqueta" data-campo="estado"></span>
+        </div>
+        <ol class="progresso">
+          <li style="--i: 0">Pendente</li>
+          <li style="--i: 1">Em produção</li>
+          <li style="--i: 2">Concluída</li>
+          <li style="--i: 3">Entregue</li>
+        </ol>
+        <p class="aviso aviso--erro" data-campo="nota" hidden></p>
+        <dl class="detalhes"></dl>
+        <p class="aviso" data-campo="instrucoes" hidden></p>
+        <p class="resultado__atualizado" data-campo="atualizado"></p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="rodape">
+    <svg class="onda" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40C240 8 480 72 720 48S1200 16 1440 44V80H0Z"/></svg>
+    <div class="contentor rodape__grelha">
+      <div>
+        <p class="logo">Doces <span>&amp;</span> Companhia</p>
+        <p>Encomendas aqui no site, por telefone, pelo Instagram ou na loja.</p>
+      </div>
+      <div>
+        <h2>Contactos</h2>
+        <p>Tel. 912 345 678<br>Segunda a sábado, 9h–19h</p>
+      </div>
+      <div>
+        <h2>Equipa</h2>
+        <p><a href="entrar.html">Área de funcionários</a></p>
+      </div>
+    </div>
+    <p class="contentor rodape__nota">Projeto escolar (PSI, M12): a empresa e os dados são fictícios. Fotos de domínio público (rawpixel e Flickr).</p>
+  </footer>
+</body>
+</html>

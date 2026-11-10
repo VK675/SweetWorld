@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fazer encomenda — Doces &amp; Companhia</title>
+  <meta name="description" content="Encomende o seu bolo online: escolha o bolo, o dia e a hora de entrega.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Nunito:wght@400;600;700&display=swap">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍰</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/dados.js" defer></script>
+  <script src="js/comum.js" defer></script>
+  <script src="js/encomendar.js" defer></script>
+  <script src="js/animacoes.js" defer></script>
+</head>
+<body>
+  <header class="topo">
+    <div class="contentor topo__linha">
+      <a class="logo" href="index.html">Doces <span>&amp;</span> Companhia</a>
+      <nav class="menu" aria-label="Principal">
+        <a href="index.html#bolos">Bolos</a>
+        <a href="index.html#como-funciona">Como funciona</a>
+        <a href="acompanhar.html">Acompanhar encomenda</a>
+        <a class="botao botao--pequeno" href="encomendar.html" aria-current="page">Encomendar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="pagina">
+    <div class="contentor" id="area-encomenda">
+      <p class="sobretitulo">Encomenda online</p>
+      <h1>Fazer encomenda</h1>
+      <p class="pagina__intro">São quatro passos. No fim recebe o número da encomenda para a acompanhar.</p>
+
+      <div class="encomendar">
+        <form id="form-encomenda" class="formulario" novalidate>
+          <section class="cartao bloco" aria-labelledby="titulo-bolo">
+            <h2 id="titulo-bolo"><span class="bloco__numero">1</span> O bolo</h2>
+            <div class="campos">
+              <div class="campo" data-erro="Escolha um bolo.">
+                <label for="produto">Bolo</label>
+                <select id="produto" name="produto" required>
+                  <option value="">Escolha um bolo…</option>
+                </select>
+                <p class="campo__erro"></p>
+              </div>
+              <div class="campo campo--curto" data-erro="Escolha entre 1 e 10.">
+                <label for="quantidade">Quantidade</label>
+                <input id="quantidade" name="quantidade" type="number" min="1" max="10" step="1" value="1" required>
+                <p class="campo__erro"></p>
+              </div>
+              <div class="campo">
+                <label for="pedido">Pedido especial <span class="campo__opcional">(opcional)</span></label>
+                <textarea id="pedido" name="pedido" maxlength="300"
+                          placeholder="Ex.: escrever «Parabéns, Ana!» e uma vela com o número 8"></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="cartao bloco" aria-labelledby="titulo-dados">
+            <h2 id="titulo-dados"><span class="bloco__numero">2</span> Os seus dados</h2>
+            <div class="campos campos-2">
+              <div class="campo" data-erro="Escreva o seu nome.">
+                <label for="nome">Nome</label>
+                <input id="nome" name="nome" type="text" autocomplete="name" maxlength="80" required>
+                <p class="campo__erro"></p>
+              </div>
+              <div class="campo" data-erro="Escreva um telemóvel com 9 algarismos, por exemplo 912 345 678.">
+                <label for="telefone">Telemóvel</label>
+                <input id="telefone" name="telefone" type="tel" autocomplete="tel" inputmode="tel"
+                       pattern="(\+351 ?)?[29]\d{2} ?\d{3} ?\d{3}" placeholder="912 345 678" required>
+                <p class="campo__erro"></p>
+              </div>
+            </div>
+          </section>
+
+          <section class="cartao bloco" aria-labelledby="titulo-entrega">
+            <h2 id="titulo-entrega"><span class="bloco__numero">3</span> Entrega</h2>
+            <div class="campos">
+              <div class="campo" data-erro="Escreva a rua e o número da porta.">
+                <label for="morada">Rua e número</label>
+                <input id="morada" name="morada" type="text" autocomplete="address-line1" maxlength="120" required
+                       placeholder="Rua das Flores, 25">
+                <p class="campo__ajuda">Confirme bem a morada: é para lá que o estafeta vai.</p>
+                <p class="campo__erro"></p>
+              </div>
+              <div class="campo">
+                <label for="indicacoes">Andar, porta, campainha <span class="campo__opcional">(opcional)</span></label>
+                <input id="indicacoes" name="indicacoes" type="text" autocomplete="address-line2" maxlength="80"
+                       placeholder="3.º esquerdo">
+              </div>
+              <div class="campos-2">
+                <div class="campo" data-erro="O código postal tem este formato: 4000-123.">
+                  <label for="codigoPostal">Código postal</label>
+                  <input id="codigoPostal" name="codigoPostal" type="text" autocomplete="postal-code" inputmode="numeric"
+                         pattern="\d{4}-\d{3}" maxlength="8" placeholder="4000-123" required>
+                  <p class="campo__erro"></p>
+                </div>
+                <div class="campo" data-erro="Escreva a localidade.">
+                  <label for="localidade">Localidade</label>
+                  <input id="localidade" name="localidade" type="text" autocomplete="address-level2" maxlength="60" required>
+                  <p class="campo__erro"></p>
+                </div>
+              </div>
+              <div class="campos-2">
+                <div class="campo" data-erro="Escolha um dia de segunda a sábado, a partir de amanhã.">
+                  <label for="data">Dia</label>
+                  <input id="data" name="data" type="date" required>
+                  <p class="campo__erro"></p>
+                </div>
+                <div class="campo" data-erro="Escolha a hora.">
+                  <label for="hora">Hora</label>
+                  <select id="hora" name="hora" required>
+                    <option value="">Escolha a hora…</option>
+                    <option>10:00</option>
+                    <option>11:00</option>
+                    <option>12:00</option>
+                    <option>13:00</option>
+                    <option>14:00</option>
+                    <option>15:00</option>
+                    <option>16:00</option>
+                    <option>17:00</option>
+                    <option>18:00</option>
+                  </select>
+                  <p class="campo__erro"></p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="cartao bloco" aria-labelledby="titulo-pagamento">
+            <h2 id="titulo-pagamento"><span class="bloco__numero">4</span> Pagamento</h2>
+            <div class="campos">
+              <fieldset class="campo" data-erro="Escolha quando paga.">
+                <legend>Quando paga?</legend>
+                <div class="opcoes">
+                  <label class="opcao">
+                    <input type="radio" name="quando" value="antecipado" required>
+                    <span><strong>Antecipadamente</strong><small>Por MB WAY ou transferência, antes da entrega.</small></span>
+                  </label>
+                  <label class="opcao">
+                    <input type="radio" name="quando" value="entrega" required>
+                    <span><strong>Na entrega</strong><small>Em dinheiro, cartão ou MB WAY.</small></span>
+                  </label>
+                </div>
+                <p class="campo__erro"></p>
+              </fieldset>
+              <fieldset class="campo" data-erro="Escolha como paga.">
+                <legend>Como paga?</legend>
+                <div class="opcoes opcoes--linha">
+                  <label class="opcao" data-quando="entrega"><input type="radio" name="metodo" value="dinheiro" required> Dinheiro</label>
+                  <label class="opcao" data-quando="entrega"><input type="radio" name="metodo" value="cartao" required> Cartão</label>
+                  <label class="opcao" data-quando="antecipado entrega"><input type="radio" name="metodo" value="mbway" required> MB WAY</label>
+                  <label class="opcao" data-quando="antecipado"><input type="radio" name="metodo" value="transferencia" required> Transferência</label>
+                </div>
+                <p class="campo__erro"></p>
+              </fieldset>
+            </div>
+          </section>
+        </form>
+
+        <aside class="cartao resumo" aria-labelledby="titulo-resumo">
+          <h2 id="titulo-resumo">Resumo</h2>
+          <img class="resumo__foto" id="resumo-foto" src="" alt="" width="900" height="600" hidden>
+          <p class="resumo__produto" id="resumo-produto">Ainda não escolheu o bolo.</p>
+          <dl class="detalhes">
+            <div><dt>Preço</dt><dd id="resumo-preco">—</dd></div>
+            <div><dt>Quantidade</dt><dd id="resumo-quantidade">—</dd></div>
+            <div><dt>Entrega</dt><dd id="resumo-entrega">—</dd></div>
+            <div class="detalhes__total"><dt>Total</dt><dd id="resumo-total">—</dd></div>
+          </dl>
+          <button class="botao botao--largo" type="submit" form="form-encomenda">Confirmar encomenda</button>
+          <p class="resumo__nota">A entrega está incluída no preço.</p>
+          <p id="erro-gravar" class="aviso aviso--erro" role="alert" hidden>
+            Não foi possível guardar a encomenda neste navegador. Saia do modo privado ou ligue-nos para o 912 345 678.
+          </p>
+        </aside>
+      </div>
+    </div>
+
+    <section id="confirmacao" class="contentor estreito" tabindex="-1" hidden>
+      <div class="cartao confirmacao">
+        <p class="sobretitulo">Encomenda recebida</p>
+        <h1>Obrigado, <span data-campo="nome"></span>!</h1>
+        <p>O número da sua encomenda é</p>
+        <p class="confirmacao__numero" data-campo="numero"></p>
+        <p>Guarde este número. Com ele e o seu telemóvel pode acompanhar a encomenda.</p>
+        <dl class="detalhes"></dl>
+        <p class="aviso" data-campo="instrucoes"></p>
+        <div class="acoes">
+          <a class="botao" id="link-acompanhar" href="acompanhar.html">Acompanhar encomenda</a>
+          <a class="botao botao--secundario" href="index.html">Voltar ao início</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <svg class="onda" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40C240 8 480 72 720 48S1200 16 1440 44V80H0Z"/></svg>
+    <div class="contentor rodape__grelha">
+      <div>
+        <p class="logo">Doces <span>&amp;</span> Companhia</p>
+        <p>Encomendas aqui no site, por telefone, pelo Instagram ou na loja.</p>
+      </div>
+      <div>
+        <h2>Contactos</h2>
+        <p>Tel. 912 345 678<br>Segunda a sábado, 9h–19h</p>
+      </div>
+      <div>
+        <h2>Equipa</h2>
+        <p><a href="entrar.html">Área de funcionários</a></p>
+      </div>
+    </div>
+    <p class="contentor rodape__nota">Projeto escolar (PSI, M12): a empresa e os dados são fictícios. Fotos de domínio público (rawpixel e Flickr).</p>
+  </footer>
+</body>
+</html>
