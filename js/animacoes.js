@@ -1,4 +1,19 @@
-// Animações discretas, partilhadas por todas as páginas.
+// Menu do telemóvel e animações discretas, partilhados pelas páginas do cliente.
+
+// No telemóvel o menu fica escondido e abre com o botão.
+const botaoDoMenu = document.querySelector('.menu__botao');
+const menuPrincipal = document.querySelector('.menu');
+
+function abrirMenu(aberto) {
+  menuPrincipal.classList.toggle('menu--aberto', aberto);
+  botaoDoMenu.setAttribute('aria-expanded', String(aberto));
+}
+
+botaoDoMenu.addEventListener('click', () => abrirMenu(!menuPrincipal.classList.contains('menu--aberto')));
+// Ao escolher uma ligação (por exemplo "Catálogo", na mesma página), o menu fecha.
+menuPrincipal.addEventListener('click', (evento) => {
+  if (evento.target.closest('a')) abrirMenu(false);
+});
 
 // Sombra no topo quando a página já não está no início.
 const topo = document.querySelector('.topo');

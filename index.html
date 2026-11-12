@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Doces &amp; Companhia — Bolos por encomenda</title>
-  <meta name="description" content="Pastelaria artesanal. Encomende o seu bolo online e acompanhe a encomenda até à sua porta.">
+  <title>Doces &amp; Companhia — Bolos, bolachas e pastelaria por encomenda</title>
+  <meta name="description" content="Pastelaria artesanal em Lisboa. Encomende online, pague por MB WAY e acompanhe a encomenda até à sua porta.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Nunito:wght@400;600;700&display=swap">
@@ -19,8 +19,11 @@
   <header class="topo">
     <div class="contentor topo__linha">
       <a class="logo" href="index.html">Doces <span>&amp;</span> Companhia</a>
-      <nav class="menu" aria-label="Principal">
-        <a href="#bolos">Bolos</a>
+      <button class="menu__botao" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <nav class="menu" id="menu" aria-label="Principal">
+        <a href="#catalogo">Catálogo</a>
         <a href="#como-funciona">Como funciona</a>
         <a href="acompanhar.html">Acompanhar encomenda</a>
         <a class="botao botao--pequeno" href="encomendar.html">Encomendar</a>
@@ -32,9 +35,9 @@
     <section class="destaque">
       <div class="contentor destaque__grelha">
         <div>
-          <p class="sobretitulo entrar">Pastelaria artesanal</p>
-          <h1 class="entrar" style="--ordem: 1">Bolos feitos com carinho, para cada ocasião.</h1>
-          <p class="destaque__texto entrar" style="--ordem: 2">Escolha o seu bolo, diga-nos o dia e a hora, e nós tratamos do resto: da cozinha até à sua porta.</p>
+          <p class="sobretitulo entrar">Pastelaria artesanal em Lisboa</p>
+          <h1 class="entrar" style="--ordem: 1">Doces feitos com carinho, para cada ocasião.</h1>
+          <p class="destaque__texto entrar" style="--ordem: 2">Bolos, bolachas e pastelaria por encomenda. Escolha, diga-nos o dia e a hora, e nós levamos até à sua porta.</p>
           <div class="acoes entrar" style="--ordem: 3">
             <a class="botao" href="encomendar.html">Fazer encomenda</a>
             <a class="botao botao--secundario" href="acompanhar.html">Acompanhar encomenda</a>
@@ -62,20 +65,28 @@
         <span class="vantagens__icone" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M2 7h12v9H2zM14 10h4l3 3v3h-7"/><circle cx="6" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg>
         </span>
-        <div><strong>Entrega em casa</strong> no dia e na hora que escolher.</div>
+        <div><strong>Entrega em casa</strong> na região de Lisboa, de segunda a sábado.</div>
       </li>
       <li>
         <span class="vantagens__icone" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h3"/></svg>
+          <svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M10.5 18h3"/></svg>
         </span>
-        <div><strong>Pague como preferir:</strong> dinheiro, cartão ou MB WAY.</div>
+        <div><strong>Pagamento por MB WAY</strong> no momento da encomenda.</div>
+      </li>
+      <li>
+        <span class="vantagens__icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>
+        </span>
+        <div><strong>Aviso por SMS</strong> antes da entrega e estado sempre à vista.</div>
       </li>
     </ul>
 
-    <section id="bolos" class="seccao">
+    <section id="catalogo" class="seccao">
       <div class="contentor">
         <p class="sobretitulo">O catálogo</p>
-        <h2>Os nossos bolos</h2>
+        <h2>Os nossos doces</h2>
+        <p class="seccao__intro">Encomende online para receber em casa. Os produtos marcados «só na loja» vendem-se prontos ao balcão, todos os dias.</p>
+        <div class="filtros" id="filtros" role="group" aria-label="Mostrar por categoria"></div>
         <ul class="grelha-produtos" id="lista-produtos"></ul>
       </div>
     </section>
@@ -87,18 +98,23 @@
         <ol class="passos">
           <li>
             <span class="passos__numero">1</span>
-            <h3>Escolha o bolo</h3>
-            <p>Veja o catálogo e escolha o que lhe apetece.</p>
+            <h3>Escolha</h3>
+            <p>Veja o catálogo e escolha o que lhe apetece. Nos bolos pode pedir um texto e velas com números.</p>
           </li>
           <li>
             <span class="passos__numero">2</span>
             <h3>Diga-nos quando</h3>
-            <p>Indique o dia, a hora e a morada de entrega. Recebe logo o número da encomenda.</p>
+            <p>Indique a morada, o dia e a hora. Só pode escolher os dias em que ainda temos lugar.</p>
           </li>
           <li>
             <span class="passos__numero">3</span>
+            <h3>Pague por MB WAY</h3>
+            <p>O pagamento é feito na hora. Recebe o número da encomenda e o recibo.</p>
+          </li>
+          <li>
+            <span class="passos__numero">4</span>
             <h3>Acompanhe</h3>
-            <p>Com esse número vê em que fase está: pendente, em produção, concluída ou entregue.</p>
+            <p>Veja em que fase está: pendente, em produção, pronta ou entregue. Antes da entrega enviamos um SMS.</p>
           </li>
         </ol>
       </div>
@@ -110,7 +126,7 @@
     <div class="contentor rodape__grelha">
       <div>
         <p class="logo">Doces <span>&amp;</span> Companhia</p>
-        <p>Encomendas aqui no site, por telefone, pelo Instagram ou na loja.</p>
+        <p>Encomendas online com entrega na região de Lisboa. Na loja, produtos prontos todos os dias.</p>
       </div>
       <div>
         <h2>Contactos</h2>
@@ -121,7 +137,7 @@
         <p><a href="entrar.html">Área de funcionários</a></p>
       </div>
     </div>
-    <p class="contentor rodape__nota">Projeto escolar (PSI, M12): a empresa e os dados são fictícios. Fotos de domínio público (rawpixel e Flickr).</p>
+    <p class="contentor rodape__nota">Projeto escolar (PSI, M12): a empresa e os dados são fictícios. Fotos de domínio público.</p>
   </footer>
 
   <template id="modelo-produto">
@@ -131,10 +147,11 @@
         <span class="produto__selo" hidden></span>
       </div>
       <div class="produto__corpo">
+        <p class="produto__categoria"></p>
         <h3 class="produto__nome"></h3>
         <p class="produto__descricao"></p>
         <div class="produto__rodape">
-          <span class="produto__preco"></span>
+          <p class="produto__preco"><span></span> <small></small></p>
           <a class="botao botao--pequeno produto__botao" href="encomendar.html">Encomendar</a>
         </div>
       </div>

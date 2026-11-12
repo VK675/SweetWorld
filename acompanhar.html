@@ -20,8 +20,11 @@
   <header class="topo">
     <div class="contentor topo__linha">
       <a class="logo" href="index.html">Doces <span>&amp;</span> Companhia</a>
-      <nav class="menu" aria-label="Principal">
-        <a href="index.html#bolos">Bolos</a>
+      <button class="menu__botao" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <nav class="menu" id="menu" aria-label="Principal">
+        <a href="index.html#catalogo">Catálogo</a>
         <a href="index.html#como-funciona">Como funciona</a>
         <a href="acompanhar.html" aria-current="page">Acompanhar encomenda</a>
         <a class="botao botao--pequeno" href="encomendar.html">Encomendar</a>
@@ -67,9 +70,12 @@
           <li style="--i: 2">Pronta</li>
           <li style="--i: 3">Entregue</li>
         </ol>
-        <p class="aviso aviso--erro" data-campo="nota" hidden></p>
+        <p class="aviso" data-campo="nota" hidden></p>
         <dl class="detalhes"></dl>
-        <p class="resultado__atualizado" data-campo="atualizado"></p>
+        <div class="resultado__fim">
+          <p class="resultado__atualizado" data-campo="atualizado"></p>
+          <button class="botao botao--secundario botao--pequeno" type="button" id="botao-recibo">Imprimir recibo</button>
+        </div>
       </section>
     </div>
   </main>
@@ -79,7 +85,7 @@
     <div class="contentor rodape__grelha">
       <div>
         <p class="logo">Doces <span>&amp;</span> Companhia</p>
-        <p>Encomendas aqui no site, por telefone, pelo Instagram ou na loja.</p>
+        <p>Encomendas online com entrega na região de Lisboa. Na loja, produtos prontos todos os dias.</p>
       </div>
       <div>
         <h2>Contactos</h2>
@@ -90,7 +96,7 @@
         <p><a href="entrar.html">Área de funcionários</a></p>
       </div>
     </div>
-    <p class="contentor rodape__nota">Projeto escolar (PSI, M12): a empresa e os dados são fictícios. Fotos de domínio público (rawpixel e Flickr).</p>
+    <p class="contentor rodape__nota">Projeto escolar (PSI, M12): a empresa e os dados são fictícios. Fotos de domínio público.</p>
   </footer>
 </body>
 </html>

@@ -20,6 +20,8 @@
   --erro-texto: #8c1d18;
   --sucesso-fundo: #dff2e9;
   --sucesso-texto: #2f6b4f;
+  --azul-fundo: #dcecf7;
+  --azul-texto: #24587a;
 
   --raio: 20px;
   --sombra: 0 10px 30px rgb(53 40 61 / 0.08);
@@ -35,6 +37,16 @@
 
 [hidden] {
   display: none !important;
+}
+
+/* Fica fora da vista, mas os leitores de ecrã leem-no. */
+.invisivel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 body {
@@ -157,6 +169,15 @@ a {
   font-size: 1.05rem;
 }
 
+.botao:disabled {
+  border-color: var(--linha);
+  background: var(--linha);
+  color: var(--texto-suave);
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+}
+
 /* Topo */
 
 .topo {
@@ -207,8 +228,32 @@ a {
   text-decoration: none;
 }
 
-.menu a:not(.botao):hover {
+.menu a:not(.botao):hover,
+.menu a[aria-current]:not(.botao) {
   color: var(--acento-escuro);
+}
+
+/* Só aparece no telemóvel: abre e fecha o menu. */
+.menu__botao {
+  display: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1.5px solid var(--linha);
+  border-radius: 12px;
+  background: var(--branco);
+  color: var(--texto);
+  cursor: pointer;
+}
+
+.menu__botao svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
 }
 
 /* Destaque (primeiro ecrã) */
@@ -314,7 +359,7 @@ a {
 
 .vantagens {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 24px;
   margin-block: 0;
   padding: 32px 0;
@@ -365,7 +410,41 @@ a {
   background: var(--pessego-claro);
 }
 
+.seccao__intro {
+  max-width: 44em;
+  color: var(--texto-suave);
+}
+
 /* Catálogo */
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.filtro {
+  padding: 0.45em 1.2em;
+  border: 1.5px solid var(--lavanda-forte);
+  border-radius: 999px;
+  background: var(--branco);
+  color: var(--texto);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.filtro:hover {
+  border-color: var(--acento);
+}
+
+.filtro[aria-pressed='true'] {
+  border-color: var(--acento);
+  background: var(--acento);
+  color: var(--branco);
+}
 
 .grelha-produtos {
   display: grid;
@@ -413,14 +492,19 @@ a {
   left: 14px;
   padding: 0.3em 0.9em;
   border-radius: 999px;
-  background: var(--branco);
+  background: var(--pessego);
+  color: var(--acento-escuro);
   font-size: 0.85rem;
   font-weight: 700;
 }
 
-.produto__selo--destaque {
-  background: var(--pessego);
+.produto__categoria {
+  margin: 0 0 6px;
   color: var(--acento-escuro);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .produto__corpo {
@@ -444,25 +528,32 @@ a {
 }
 
 .produto__preco {
+  margin: 0;
   font-size: 1.15rem;
   font-weight: 700;
 }
 
-.produto__indisponivel {
+.produto__preco small {
+  margin-left: 4px;
   color: var(--texto-suave);
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 400;
 }
 
-.produto--esgotado .produto__foto {
-  filter: grayscale(0.6);
-  opacity: 0.75;
+.produto__loja {
+  padding: 0.4em 1em;
+  border-radius: 999px;
+  background: var(--sucesso-fundo);
+  color: var(--sucesso-texto);
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 /* Como funciona */
 
 .passos {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 24px;
   margin: 32px 0 0;
   padding: 0;
@@ -590,6 +681,10 @@ a {
   max-width: 160px;
 }
 
+.campo--medio {
+  max-width: 280px;
+}
+
 .campo > label,
 .campo > legend {
   padding: 0;
@@ -710,6 +805,318 @@ a {
 
 .campo--erro .opcao {
   border-color: var(--erro);
+}
+
+/* Escolha do produto: cartões com foto que são botões de rádio */
+
+.escolhas__categoria {
+  margin: 18px 0 8px;
+  color: var(--acento-escuro);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.escolhas__categoria:first-child {
+  margin-top: 0;
+}
+
+.escolhas__grelha {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.escolha {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  padding: 8px 8px 12px;
+  border: 1.5px solid var(--linha);
+  border-radius: 16px;
+  background: var(--fundo);
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+.escolha:hover {
+  border-color: var(--lavanda-forte);
+}
+
+.escolha input {
+  position: absolute;
+  opacity: 0;
+}
+
+.escolha__foto {
+  width: 100%;
+  margin-bottom: 6px;
+  aspect-ratio: 4 / 3;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.escolha__nome {
+  padding-inline: 4px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.escolha__preco {
+  padding-inline: 4px;
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+}
+
+.escolha:has(input:checked) {
+  border-color: var(--acento);
+  background: var(--lavanda-clara);
+  box-shadow: 0 0 0 3px rgb(123 75 148 / 0.18);
+}
+
+/* Visto no canto da foto escolhida */
+.escolha:has(input:checked)::after {
+  content: '✓';
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--acento);
+  color: var(--branco);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.escolha:has(input:focus-visible),
+.dia:has(input:focus-visible) {
+  outline: 3px solid var(--acento);
+  outline-offset: 2px;
+}
+
+.campo--erro .escolha {
+  border-color: var(--erro);
+}
+
+/* Quantidade com botões − e + */
+
+.contador {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  overflow: hidden;
+  border: 1.5px solid var(--linha);
+  border-radius: 12px;
+  background: var(--fundo);
+}
+
+.contador button {
+  width: 48px;
+  height: 48px;
+  border: 0;
+  background: transparent;
+  color: var(--acento-escuro);
+  font: inherit;
+  font-size: 1.4rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.contador button:hover {
+  background: var(--lavanda);
+}
+
+.campo .contador input {
+  width: 56px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-weight: 700;
+  text-align: center;
+  appearance: textfield;
+}
+
+.campo .contador input:focus {
+  background: transparent;
+  box-shadow: none;
+}
+
+.contador:focus-within {
+  border-color: var(--acento);
+  box-shadow: 0 0 0 3px rgb(123 75 148 / 0.18);
+}
+
+.contador input::-webkit-inner-spin-button {
+  appearance: none;
+}
+
+/* Calendário de entregas: cada dia é um botão de rádio */
+
+.calendario {
+  display: grid;
+  gap: 10px;
+  max-width: 460px;
+}
+
+.calendario__periodo {
+  margin: 0;
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+}
+
+.calendario__grelha {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.calendario__semana {
+  color: var(--texto-suave);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.dia {
+  position: relative;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  min-height: 52px;
+  padding: 4px 2px;
+  border: 1.5px solid var(--linha);
+  border-radius: 12px;
+  background: var(--fundo);
+  font-weight: 700;
+  line-height: 1.15;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+}
+
+.dia input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.dia small {
+  color: var(--texto-suave);
+  font-size: 0.66rem;
+  font-weight: 600;
+}
+
+.dia:hover {
+  border-color: var(--acento);
+}
+
+.dia:has(input:checked) {
+  border-color: var(--acento);
+  background: var(--acento);
+  color: var(--branco);
+}
+
+.dia:has(input:checked) small {
+  color: var(--branco);
+}
+
+/* Dia cheio: riscado. Domingo: apagado. */
+.dia--indisponivel {
+  border-style: dashed;
+  background: transparent;
+  color: var(--texto-suave);
+  cursor: not-allowed;
+}
+
+.dia--indisponivel:hover {
+  border-color: var(--linha);
+}
+
+.dia--indisponivel .dia__numero {
+  text-decoration: line-through;
+}
+
+.dia--fechado {
+  border-color: transparent;
+  opacity: 0.55;
+}
+
+.dia--fechado .dia__numero {
+  text-decoration: none;
+}
+
+.campo--erro .dia:not(.dia--indisponivel) {
+  border-color: var(--erro);
+}
+
+/* Pagamento por MB WAY */
+
+.mbway {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: var(--lavanda-clara);
+}
+
+.mbway__marca {
+  flex: none;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: var(--texto);
+  color: var(--branco);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/* Janelas por cima da página (<dialog>) */
+
+.dialogo {
+  width: min(460px, 100% - 32px);
+  padding: clamp(22px, 5vw, 32px);
+  border: 0;
+  border-radius: var(--raio);
+  background: var(--branco);
+  color: var(--texto);
+  box-shadow: 0 30px 80px rgb(53 40 61 / 0.3);
+}
+
+.dialogo::backdrop {
+  background: rgb(53 40 61 / 0.5);
+}
+
+.dialogo h2 {
+  font-size: 1.6rem;
+}
+
+.dialogo__nota {
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+}
+
+.carregar {
+  width: 44px;
+  height: 44px;
+  margin: 20px auto;
+  border: 4px solid var(--lavanda-forte);
+  border-top-color: var(--acento);
+  border-radius: 50%;
+  animation: rodar 0.9s linear infinite;
 }
 
 /* Fazer encomenda */
@@ -862,6 +1269,14 @@ a {
   font-size: 1.5rem;
 }
 
+.resultado__fim {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .resultado__atualizado {
   margin: 0;
   color: var(--texto-suave);
@@ -877,12 +1292,23 @@ a {
   font-weight: 700;
 }
 
+.etiqueta[data-estado='em-producao'] {
+  background: var(--lavanda-forte);
+  color: var(--acento-escuro);
+}
+
+.etiqueta[data-estado='pronta'] {
+  background: var(--azul-fundo);
+  color: var(--azul-texto);
+}
+
 .etiqueta[data-estado='entregue'] {
   background: var(--sucesso-fundo);
   color: var(--sucesso-texto);
 }
 
-.etiqueta[data-estado='nao-entregue'] {
+.etiqueta[data-estado='no-armazem'],
+.etiqueta[data-estado='remarcada'] {
   background: var(--erro-fundo);
   color: var(--erro-texto);
 }
@@ -1009,11 +1435,59 @@ a {
   font-size: 0.85rem;
 }
 
+/* Ecrãs médios */
+
+@media (max-width: 1000px) {
+  .vantagens,
+  .passos {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .passos li::after {
+    display: none;
+  }
+}
+
 /* Telemóvel */
 
 @media (max-width: 760px) {
-  .menu a:not(.botao) {
+  .menu__botao {
+    display: grid;
+  }
+
+  /* O menu passa a abrir por baixo do topo. */
+  .menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
     display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 4px 16px 16px;
+    border-bottom: 1px solid var(--linha);
+    background: var(--fundo);
+    box-shadow: 0 16px 24px rgb(53 40 61 / 0.08);
+  }
+
+  .menu--aberto {
+    display: flex;
+  }
+
+  .menu a:not(.botao) {
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--linha);
+  }
+
+  .menu .botao {
+    margin-top: 14px;
+    text-align: center;
+  }
+
+  .mbway {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .destaque__grelha,
@@ -1032,10 +1506,6 @@ a {
 
   .vantagens {
     gap: 16px;
-  }
-
-  .passos li::after {
-    display: none;
   }
 
   .destaque__selo {
@@ -1114,6 +1584,12 @@ a {
   }
 }
 
+@keyframes rodar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -1126,4 +1602,102 @@ a {
     opacity: 1;
     transform: none;
   }
+}
+
+/* Impressão: no papel só sai o recibo (ou a etiqueta), que o js/comum.js põe em .impressao */
+
+.impressao {
+  display: none;
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  body > :not(.impressao) {
+    display: none !important;
+  }
+
+  .impressao {
+    display: block;
+  }
+}
+
+.recibo {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 24px;
+  color: #000;
+  font-size: 11pt;
+}
+
+.recibo__empresa {
+  margin: 0;
+  font-family: var(--fonte-titulos);
+  font-size: 18pt;
+  font-weight: 600;
+}
+
+.recibo__contactos {
+  margin: 0 0 18pt;
+  color: #444;
+}
+
+.recibo h1 {
+  margin: 0 0 12pt;
+  font-size: 16pt;
+}
+
+.recibo__dados {
+  display: grid;
+  gap: 4pt;
+  margin: 0 0 16pt;
+}
+
+.recibo__dados div {
+  display: flex;
+  gap: 12pt;
+}
+
+.recibo__dados dt {
+  flex: none;
+  width: 120pt;
+  color: #444;
+}
+
+.recibo__dados dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.recibo__linhas {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.recibo__linhas th,
+.recibo__linhas td {
+  padding: 6pt 4pt;
+  border-bottom: 1px solid #bbb;
+  text-align: left;
+}
+
+.recibo__linhas th:not(:first-child),
+.recibo__linhas td:not(:first-child) {
+  text-align: right;
+}
+
+.recibo__linhas tfoot th,
+.recibo__linhas tfoot td {
+  border-top: 2px solid #000;
+  border-bottom: 0;
+  font-size: 12pt;
+  font-weight: 700;
+}
+
+.recibo__nota {
+  margin-top: 24pt;
+  color: #444;
+  font-size: 9pt;
 }

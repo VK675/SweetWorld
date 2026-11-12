@@ -394,6 +394,17 @@ function formatarMomento(iso) {
   });
 }
 
+// Momento guardado (ISO) → "12/11/2026, 09:14" (para os recibos)
+function formatarDataCompleta(iso) {
+  return new Date(iso).toLocaleString('pt-PT', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 // Momento guardado (ISO) → "09:14"
 function formatarHora(iso) {
   return new Date(iso).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
@@ -634,12 +645,13 @@ function pesquisarEncomendas(texto) {
   );
 }
 
-// O cliente encomenda no site e paga logo por MB WAY (o pagamento é simulado).
+// Confirma as regras e devolve a encomenda arrumada (ainda sem número nem pagamento).
+// A página chama-a antes de pedir o pagamento, para não cobrar uma encomenda impossível.
 // dados: cliente { nome, telefone }, linhas [{ produtoId, quantidade }],
 //        personalizacao { texto, velas, notas },
 //        entrega { morada, indicacoes, codigoPostal, concelho, data, hora },
 //        pagamento { metodo, telefone }.
-function criarEncomenda(dados) {
+function validarEncomenda(dados) {
   const nome = limparTexto(dados.cliente.nome);
   if (!nome.includes(' ')) throw new Error('Escreva o nome e o apelido.');
   if (!/^[29]\d{8}$/.test(normalizarTelefone(dados.cliente.telefone))) {
@@ -678,11 +690,11 @@ function criarEncomenda(dados) {
   if (!/^\d{0,3}$/.test(velas)) throw new Error('As velas são um número, por exemplo 8 ou 30.');
   if (dados.pagamento.metodo !== 'mbway') throw new Error('No site o pagamento é por MB WAY.');
 
-  const encomendas = listarEncomendas();
-  const agora = new Date().toISOString();
-  const encomenda = {
-    numero: encomendas.reduce((maior, e) => Math.max(maior, e.numero), 1000) + 1,
-    criadaEm: agora,
+  if (!/^[29]\d{8}$/.test(normalizarTelefone(dados.pagamento.telefone))) {
+    throw new Error('O telemóvel do MB WAY tem de ter 9 algarismos.');
+  }
+
+  return {
     cliente: { nome, telefone: formatarTelefone(dados.cliente.telefone) },
     linhas,
     // Só os bolos levam texto e velas; as notas servem para qualquer produto.
@@ -692,16 +704,24 @@ function criarEncomenda(dados) {
       notas: limparTexto(dados.personalizacao?.notas).slice(0, 200),
     },
     entrega,
-    pagamento: {
-      metodo: 'mbway',
-      telefone: formatarTelefone(dados.pagamento.telefone || dados.cliente.telefone),
-      em: agora,
-    },
+  };
+}
+
+// O cliente encomenda no site e paga logo por MB WAY (o pagamento é simulado).
+function criarEncomenda(dados) {
+  const validada = validarEncomenda(dados);
+  const encomendas = listarEncomendas();
+  const agora = new Date().toISOString();
+  const encomenda = {
+    numero: encomendas.reduce((maior, e) => Math.max(maior, e.numero), 1000) + 1,
+    criadaEm: agora,
+    ...validada,
+    pagamento: { metodo: 'mbway', telefone: formatarTelefone(dados.pagamento.telefone), em: agora },
     estado: 'pendente',
     historico: [{
       em: agora,
       estado: 'pendente',
-      por: nome,
+      por: validada.cliente.nome,
       papel: 'cliente',
       nota: 'Encomenda feita no site e paga por MB WAY',
     }],
