@@ -11,6 +11,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍰</text></svg>">
   <link rel="stylesheet" href="css/style.css">
   <script src="js/dados.js" defer></script>
+  <script src="js/dados-demo.js" defer></script>
   <script src="js/comum.js" defer></script>
   <script src="js/encomendar.js" defer></script>
   <script src="js/animacoes.js" defer></script>
@@ -62,8 +63,8 @@
           <section class="cartao bloco" aria-labelledby="titulo-dados">
             <h2 id="titulo-dados"><span class="bloco__numero">2</span> Os seus dados</h2>
             <div class="campos campos-2">
-              <div class="campo" data-erro="Escreva o seu nome.">
-                <label for="nome">Nome</label>
+              <div class="campo" data-erro="Escreva o seu nome e apelido.">
+                <label for="nome">Nome e apelido</label>
                 <input id="nome" name="nome" type="text" autocomplete="name" maxlength="80" required>
                 <p class="campo__erro"></p>
               </div>
@@ -92,15 +93,17 @@
                        placeholder="3.º esquerdo">
               </div>
               <div class="campos-2">
-                <div class="campo" data-erro="O código postal tem este formato: 4000-123.">
+                <div class="campo" data-erro="O código postal tem este formato: 1200-195.">
                   <label for="codigoPostal">Código postal</label>
                   <input id="codigoPostal" name="codigoPostal" type="text" autocomplete="postal-code" inputmode="numeric"
-                         pattern="\d{4}-\d{3}" maxlength="8" placeholder="4000-123" required>
+                         pattern="\d{4}-\d{3}" maxlength="8" placeholder="1200-195" required>
                   <p class="campo__erro"></p>
                 </div>
-                <div class="campo" data-erro="Escreva a localidade.">
-                  <label for="localidade">Localidade</label>
-                  <input id="localidade" name="localidade" type="text" autocomplete="address-level2" maxlength="60" required>
+                <div class="campo" data-erro="Escolha o concelho.">
+                  <label for="concelho">Concelho</label>
+                  <select id="concelho" name="concelho" required>
+                    <option value="">Escolha o concelho…</option>
+                  </select>
                   <p class="campo__erro"></p>
                 </div>
               </div>
@@ -133,30 +136,7 @@
           <section class="cartao bloco" aria-labelledby="titulo-pagamento">
             <h2 id="titulo-pagamento"><span class="bloco__numero">4</span> Pagamento</h2>
             <div class="campos">
-              <fieldset class="campo" data-erro="Escolha quando paga.">
-                <legend>Quando paga?</legend>
-                <div class="opcoes">
-                  <label class="opcao">
-                    <input type="radio" name="quando" value="antecipado" required>
-                    <span><strong>Antecipadamente</strong><small>Por MB WAY ou transferência, antes da entrega.</small></span>
-                  </label>
-                  <label class="opcao">
-                    <input type="radio" name="quando" value="entrega" required>
-                    <span><strong>Na entrega</strong><small>Em dinheiro, cartão ou MB WAY.</small></span>
-                  </label>
-                </div>
-                <p class="campo__erro"></p>
-              </fieldset>
-              <fieldset class="campo" data-erro="Escolha como paga.">
-                <legend>Como paga?</legend>
-                <div class="opcoes opcoes--linha">
-                  <label class="opcao" data-quando="entrega"><input type="radio" name="metodo" value="dinheiro" required> Dinheiro</label>
-                  <label class="opcao" data-quando="entrega"><input type="radio" name="metodo" value="cartao" required> Cartão</label>
-                  <label class="opcao" data-quando="antecipado entrega"><input type="radio" name="metodo" value="mbway" required> MB WAY</label>
-                  <label class="opcao" data-quando="antecipado"><input type="radio" name="metodo" value="transferencia" required> Transferência</label>
-                </div>
-                <p class="campo__erro"></p>
-              </fieldset>
+              <p class="aviso">O pagamento é feito agora, por MB WAY, para o telemóvel que indicou.</p>
             </div>
           </section>
         </form>
@@ -188,7 +168,6 @@
         <p class="confirmacao__numero" data-campo="numero"></p>
         <p>Guarde este número. Com ele e o seu telemóvel pode acompanhar a encomenda.</p>
         <dl class="detalhes"></dl>
-        <p class="aviso" data-campo="instrucoes"></p>
         <div class="acoes">
           <a class="botao" id="link-acompanhar" href="acompanhar.html">Acompanhar encomenda</a>
           <a class="botao botao--secundario" href="index.html">Voltar ao início</a>

@@ -1,54 +1,8 @@
-// Funções partilhadas pelas páginas: datas, textos da encomenda e validação de formulários.
+// Funções partilhadas pelas páginas: resumo da encomenda e validação de formulários.
 
-// Data no formato do <input type="date"> (AAAA-MM-DD), na hora local.
-function dataLocal(data) {
-  const doisDigitos = (n) => String(n).padStart(2, '0');
-  return `${data.getFullYear()}-${doisDigitos(data.getMonth() + 1)}-${doisDigitos(data.getDate())}`;
-}
-
-// "quinta-feira, 12 de novembro, às 15:00"
-function formatarEntrega({ data, hora }) {
-  const dia = new Date(`${data}T12:00`).toLocaleDateString('pt-PT', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  });
-  return `${dia}, às ${hora}`;
-}
-
-function formatarMorada(entrega) {
-  const rua = [entrega.morada, entrega.indicacoes].filter(Boolean).join(', ');
-  return `${rua}, ${entrega.codigoPostal} ${entrega.localidade}`;
-}
-
-function descreverPagamento({ pago, quando, metodo }) {
-  const estado = pago ? 'Pago' : 'Por pagar';
-  return `${estado}: ${METODOS_PAGAMENTO[metodo]}, ${MOMENTOS_PAGAMENTO[quando].toLowerCase()}`;
-}
-
-function instrucoesPagamento(encomenda) {
-  const { pago, quando, metodo } = encomenda.pagamento;
-  const total = formatarPreco(totalEncomenda(encomenda));
-  if (pago) return '';
-  if (quando === 'entrega') return `Paga ${total} ao estafeta quando receber a encomenda.`;
-  if (metodo === 'mbway') {
-    return `Envie ${total} por MB WAY para o 912 345 678 e escreva «Encomenda ${encomenda.numero}» na mensagem.`;
-  }
-  return `Transfira ${total} para o IBAN PT50 0000 0000 0000 0000 0000 0 e indique «Encomenda ${encomenda.numero}» no descritivo.`;
-}
-
-// Preenche um <dl class="detalhes"> com o resumo da encomenda.
-function preencherDetalhes(lista, encomenda) {
-  const linhas = [
-    ['Bolo', encomenda.linhas.map((l) => `${l.quantidade} × ${l.nome}`).join(', ')],
-    ['Pedido especial', encomenda.pedidoEspecial],
-    ['Entrega prevista', formatarEntrega(encomenda.entrega)],
-    ['Morada', formatarMorada(encomenda.entrega)],
-    ['Total', formatarPreco(totalEncomenda(encomenda))],
-    ['Pagamento', descreverPagamento(encomenda.pagamento)],
-  ];
-
-  lista.replaceChildren(...linhas.filter(([, valor]) => valor).map(([rotulo, valor]) => {
+// Preenche um <dl class="detalhes"> com pares [rótulo, valor]. Os valores vazios não aparecem.
+function preencherDetalhes(lista, pares) {
+  lista.replaceChildren(...pares.filter(([, valor]) => valor).map(([rotulo, valor]) => {
     const linha = document.createElement('div');
     const termo = document.createElement('dt');
     const descricao = document.createElement('dd');
@@ -57,6 +11,21 @@ function preencherDetalhes(lista, encomenda) {
     linha.append(termo, descricao);
     return linha;
   }));
+}
+
+// O que o cliente vê sobre a sua encomenda.
+function detalhesDaEncomenda(encomenda) {
+  const { texto, velas, notas } = encomenda.personalizacao;
+  return [
+    ['Produto', encomenda.linhas.map((l) => `${l.quantidade} × ${l.nome}`).join(', ')],
+    ['Texto no bolo', texto],
+    ['Velas', velas],
+    ['Notas', notas],
+    ['Entrega', formatarEntrega(encomenda.entrega)],
+    ['Morada', formatarMorada(encomenda.entrega)],
+    ['Total', formatarPreco(totalDe(encomenda))],
+    ['Pagamento', `Pago por ${METODOS_PAGAMENTO[encomenda.pagamento.metodo]}`],
+  ];
 }
 
 // Validação com mensagens próprias. Cada campo fica dentro de um .campo com:

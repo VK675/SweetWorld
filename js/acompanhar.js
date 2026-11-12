@@ -5,8 +5,8 @@ const campos = formulario.elements;
 const resultado = document.querySelector('#resultado');
 const naoEncontrada = document.querySelector('#nao-encontrada');
 
-// Ordem da barra de progresso. "Não entregue" fica em "Concluída", com um aviso.
-const ETAPAS = ['pendente', 'em-producao', 'concluida', 'entregue'];
+// Ordem da barra de progresso. As não entregues ficam em "Pronta", com um aviso.
+const ETAPAS = ['pendente', 'em-producao', 'pronta', 'entregue'];
 
 function preencher(campo, texto) {
   const elemento = resultado.querySelector(`[data-campo="${campo}"]`);
@@ -14,10 +14,23 @@ function preencher(campo, texto) {
   elemento.hidden = texto === '';
 }
 
+// O que dizer ao cliente quando a entrega falhou.
+function avisoNaoEntregue(encomenda) {
+  if (encomenda.estado === 'remarcada') {
+    return `Não conseguimos entregar. A nova entrega está marcada para ${formatarEntrega(encomenda.entrega)}.`;
+  }
+  if (prazoTerminado(encomenda)) {
+    return `O prazo para levantar a encomenda no armazém terminou a ${formatarDia(encomenda.levantarAte)}. Ligue-nos: 912 345 678.`;
+  }
+  if (encomenda.estado === 'no-armazem') {
+    return `Não conseguimos entregar. A encomenda está no nosso armazém e pode levantá-la até ${formatarDia(encomenda.levantarAte)}.`;
+  }
+  return '';
+}
+
 function mostrarEstado(encomenda) {
-  const ultimaMudanca = encomenda.historico.at(-1);
-  const naoEntregue = encomenda.estado === 'nao-entregue';
-  const etapaAtual = ETAPAS.indexOf(naoEntregue ? 'concluida' : encomenda.estado);
+  const naoEntregue = ['no-armazem', 'remarcada'].includes(encomenda.estado);
+  const etapaAtual = ETAPAS.indexOf(naoEntregue ? 'pronta' : encomenda.estado);
 
   preencher('numero', String(encomenda.numero));
   preencher('estado', ESTADOS[encomenda.estado]);
@@ -29,18 +42,9 @@ function mostrarEstado(encomenda) {
     else etapa.removeAttribute('aria-current');
   });
 
-  const motivo = ultimaMudanca.nota ? `: ${ultimaMudanca.nota}` : '';
-  preencher('nota', naoEntregue
-    ? `Não conseguimos entregar${motivo}. Vamos ligar-lhe para combinar uma nova entrega.`
-    : '');
-  preencherDetalhes(resultado.querySelector('.detalhes'), encomenda);
-  preencher('instrucoes', instrucoesPagamento(encomenda));
-  preencher('atualizado', `Última atualização: ${new Date(ultimaMudanca.em).toLocaleString('pt-PT', {
-    day: 'numeric',
-    month: 'long',
-    hour: '2-digit',
-    minute: '2-digit',
-  })}`);
+  preencher('nota', avisoNaoEntregue(encomenda));
+  preencherDetalhes(resultado.querySelector('.detalhes'), detalhesDaEncomenda(encomenda));
+  preencher('atualizado', `Última atualização: ${formatarMomento(encomenda.historico.at(-1).em)}`);
 
   // Ler offsetWidth com o cartão escondido faz as animações recomeçarem a cada procura.
   resultado.hidden = true;
