@@ -30,6 +30,7 @@ function protegerPagina(papel) {
   const sessao = obterSessao();
   if (sessao?.papel !== papel) {
     location.replace(`entrar.html?voltar=${papel}`);
+    // O erro para o resto do script da página, que só serve a quem entrou.
     throw new Error('Sessão em falta.');
   }
   for (const elemento of document.querySelectorAll('[data-sessao="nome"]')) elemento.textContent = sessao.nome;
@@ -38,6 +39,92 @@ function protegerPagina(papel) {
     location.href = 'entrar.html';
   });
   return sessao;
+}
+
+// Separadores: <div role="tablist"> com botões role="tab", data-separador="nome"
+// e aria-controls="id do painel". O separador aberto fica no endereço (#encomendas),
+// para não se perder ao recarregar a página.
+function ligarSeparadores(lista) {
+  const separadores = [...lista.querySelectorAll('[role="tab"]')];
+
+  function abrir(separador, focar = false) {
+    for (const outro of separadores) {
+      const aberto = outro === separador;
+      outro.setAttribute('aria-selected', String(aberto));
+      outro.tabIndex = aberto ? 0 : -1;
+      document.getElementById(outro.getAttribute('aria-controls')).hidden = !aberto;
+    }
+    if (focar) separador.focus();
+    history.replaceState(null, '', `#${separador.dataset.separador}`);
+  }
+
+  lista.addEventListener('click', (evento) => {
+    const separador = evento.target.closest('[role="tab"]');
+    if (separador) abrir(separador);
+  });
+
+  // Com o teclado, as setas passam ao separador do lado.
+  lista.addEventListener('keydown', (evento) => {
+    const passo = { ArrowRight: 1, ArrowLeft: -1 }[evento.key];
+    if (!passo) return;
+    const atual = separadores.indexOf(document.activeElement);
+    abrir(separadores[(atual + passo + separadores.length) % separadores.length], true);
+  });
+
+  const pedido = separadores.find((s) => `#${s.dataset.separador}` === location.hash);
+  abrir(pedido ?? separadores[0]);
+}
+
+// Um erro do navegador (DOMException) quer dizer que ele não deixou guardar os dados.
+function mensagemDeErro(falha) {
+  return falha instanceof DOMException
+    ? 'Não foi possível guardar neste navegador. Saia do modo privado e tente de novo.'
+    : falha.message;
+}
+
+/* ---------- Escolher outro dia de entrega (Balcão e Entregador) ---------- */
+
+// Usa o <dialog id="dialogo-dia"> da página. guardar(data, hora) grava a mudança
+// e lança um erro se não puder: o erro aparece dentro da janela, que fica aberta.
+function escolherOutroDia(encomenda, guardar) {
+  const dialogo = document.querySelector('#dialogo-dia');
+  const formulario = dialogo.querySelector('form');
+  const { hora } = formulario.elements;
+  const erro = dialogo.querySelector('[data-campo="erro"]');
+  const kg = pesoDe(encomenda);
+
+  // Na primeira vez: as horas e os botões.
+  if (hora.options.length === 0) {
+    for (const opcao of HORAS_ENTREGA) hora.add(new Option(opcao));
+    limparErrosAoCorrigir(formulario);
+    dialogo.querySelector('[data-acao="cancelar"]').addEventListener('click', () => dialogo.close());
+  }
+
+  dialogo.querySelector('[data-campo="numero"]').textContent = encomenda.numero;
+  dialogo.querySelector('[data-campo="atual"]').textContent = formatarEntrega(encomenda.entrega);
+  dialogo.querySelector('[data-campo="peso"]').textContent = formatarPeso(kg);
+  desenharCalendario(dialogo.querySelector('.calendario'), {
+    kg,
+    ignorar: encomenda.numero,
+    escolhido: encomenda.entrega.data,
+    mostrarOcupacao: true,
+  });
+  hora.value = encomenda.entrega.hora;
+  limparErros(formulario);
+  erro.hidden = true;
+
+  formulario.onsubmit = (evento) => {
+    evento.preventDefault();
+    if (!validarFormulario(formulario)) return;
+    try {
+      guardar(formulario.elements.data.value, hora.value);
+      dialogo.close();
+    } catch (falha) {
+      erro.textContent = mensagemDeErro(falha);
+      erro.hidden = false;
+    }
+  };
+  dialogo.showModal();
 }
 
 /* ---------- Resumo da encomenda ---------- */
@@ -98,6 +185,15 @@ function validarFormulario(formulario) {
   return primeiroErro === null;
 }
 
+// Tira os erros que ficaram de uma vez anterior (por exemplo, ao reabrir uma janela).
+function limparErros(formulario) {
+  for (const caixa of formulario.querySelectorAll('.campo--erro')) {
+    caixa.classList.remove('campo--erro');
+    caixa.querySelector('.campo__erro').textContent = '';
+  }
+  for (const campo of formulario.querySelectorAll('[aria-invalid]')) campo.removeAttribute('aria-invalid');
+}
+
 // Depois do primeiro erro, a mensagem desaparece assim que o campo fica certo.
 function limparErrosAoCorrigir(formulario) {
   formulario.addEventListener('input', atualizar);
@@ -115,9 +211,10 @@ function limparErrosAoCorrigir(formulario) {
 // por isso o formulário valida-o como qualquer outro campo. Os dias cheios e os domingos
 // aparecem, mas não se podem escolher.
 // opcoes: nome (do campo), kg (peso da encomenda), ignorar (encomenda que muda de dia),
-//         escolhido (data marcada), mostrarOcupacao (os funcionários veem "7/10" e os quilos).
+//         escolhido (data marcada), mostrarOcupacao (os funcionários veem "7/10" e os quilos),
+//         soLeitura (só mostra os dias, sem botões: a agenda do Balcão).
 function desenharCalendario(contentor, opcoes = {}) {
-  const { nome = 'data', kg = 0, ignorar = null, escolhido = '', mostrarOcupacao = false } = opcoes;
+  const { nome = 'data', kg = 0, ignorar = null, escolhido = '', mostrarOcupacao = false, soLeitura = false } = opcoes;
   const agenda = agendaDeEntregas({ kg, ignorar });
   const diaEMes = (data) => new Date(`${data}T12:00`).toLocaleDateString('pt-PT', { day: 'numeric', month: 'long' });
   const grelha = criarElemento('div', { className: 'calendario__grelha' });
@@ -136,33 +233,38 @@ function desenharCalendario(contentor, opcoes = {}) {
     const explicacao = livre ? '' : MOTIVOS_DIA[dia.motivo];
     const ocupacao = `${dia.encomendas} de ${MAX_ENCOMENDAS_DIA} encomendas, ${formatarPeso(dia.kg)}`;
 
-    const casa = criarElemento('label', {
+    const descricao = [formatarDia(dia.data), explicacao, mostrarOcupacao && !fechado ? ocupacao : ''].filter(Boolean).join('. ');
+
+    const casa = criarElemento(soLeitura ? 'div' : 'label', {
       className: `dia${livre ? '' : ' dia--indisponivel'}${fechado ? ' dia--fechado' : ''}`,
       title: [explicacao, mostrarOcupacao && !fechado ? ocupacao : ''].filter(Boolean).join(' '),
     },
-      criarElemento('input', {
-        type: 'radio',
-        name: nome,
-        value: dia.data,
-        required: true,
-        disabled: !livre,
-        checked: livre && dia.data === escolhido,
-        'aria-label': [formatarDia(dia.data), explicacao, mostrarOcupacao && !fechado ? ocupacao : ''].filter(Boolean).join('. '),
-      }),
-      criarElemento('span', { className: 'dia__numero', textContent: Number(dia.data.slice(8)) }),
+      soLeitura
+        ? criarElemento('span', { className: 'invisivel', textContent: descricao })
+        : criarElemento('input', {
+          type: 'radio',
+          name: nome,
+          value: dia.data,
+          required: true,
+          disabled: !livre,
+          checked: livre && dia.data === escolhido,
+          'aria-label': descricao,
+        }),
+      criarElemento('span', { className: 'dia__numero', textContent: Number(dia.data.slice(8)), 'aria-hidden': 'true' }),
     );
 
     if (mostrarOcupacao && !fechado) {
       casa.append(
-        criarElemento('small', { textContent: `${dia.encomendas}/${MAX_ENCOMENDAS_DIA}` }),
-        criarElemento('small', { textContent: formatarPeso(dia.kg) }),
+        criarElemento('small', { textContent: `${dia.encomendas}/${MAX_ENCOMENDAS_DIA}`, 'aria-hidden': 'true' }),
+        criarElemento('small', { textContent: formatarPeso(dia.kg), 'aria-hidden': 'true' }),
       );
     } else if (!livre && !fechado) {
-      casa.append(criarElemento('small', { textContent: 'cheio' }));
+      casa.append(criarElemento('small', { textContent: 'cheio', 'aria-hidden': 'true' }));
     }
     grelha.append(casa);
   }
 
+  contentor.classList.toggle('calendario--leitura', soLeitura);
   contentor.replaceChildren(
     criarElemento('p', {
       className: 'calendario__periodo',

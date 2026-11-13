@@ -890,6 +890,8 @@ function registarVenda(dados) {
   const sessao = exigirSessao('balcao');
   if (!(dados.metodo in METODOS_PAGAMENTO)) throw new Error('Escolha como o cliente paga.');
   if (dados.linhas.length === 0) throw new Error('Junte pelo menos um produto à venda.');
+  const ids = dados.linhas.map((linha) => linha.produtoId);
+  if (new Set(ids).size !== ids.length) throw new Error('Cada produto só pode aparecer uma vez na venda.');
 
   const stock = produtosDoDia();
   const linhas = dados.linhas.map(({ produtoId, quantidade }) => {

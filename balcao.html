@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Balcão — Doces &amp; Companhia</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Nunito:wght@400;600;700&display=swap">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍰</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/dados.js" defer></script>
+  <script src="js/dados-demo.js" defer></script>
+  <script src="js/comum.js" defer></script>
+  <script src="js/balcao.js" defer></script>
+</head>
+<body>
+  <header class="topo">
+    <div class="contentor topo__linha">
+      <a class="logo" href="index.html">Doces <span>&amp;</span> Companhia</a>
+      <div class="sessao">
+        <span class="sessao__quem"><span class="sessao__papel">Balcão · </span><strong data-sessao="nome"></strong></span>
+        <button class="botao botao--secundario botao--pequeno" type="button" data-sessao="sair">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="pagina pagina--equipa">
+    <div class="contentor">
+      <p class="sobretitulo" id="hoje"></p>
+      <h1>Balcão</h1>
+
+      <div class="separadores" role="tablist" aria-label="Secções do Balcão">
+        <button type="button" role="tab" id="sep-vender" data-separador="vender" aria-controls="painel-vender">Vender</button>
+        <button type="button" role="tab" id="sep-encomendas" data-separador="encomendas" aria-controls="painel-encomendas">Encomendas</button>
+        <button type="button" role="tab" id="sep-dias" data-separador="dias" aria-controls="painel-dias">Dias livres</button>
+      </div>
+
+      <!-- Vender: produtos do dia (stock atual) e a venda que se está a fazer -->
+      <section id="painel-vender" role="tabpanel" aria-labelledby="sep-vender">
+        <div class="venda">
+          <div>
+            <h2 class="painel__titulo">Produtos do dia</h2>
+            <p class="painel__intro">Toque num produto para o juntar à venda. O que resta atualiza-se sozinho.</p>
+            <p id="sem-stock" class="aviso" hidden>Ainda não há produtos do dia. Quem os define é o Gerente.</p>
+            <div class="stock" id="stock"></div>
+          </div>
+
+          <form id="form-venda" class="cartao venda__resumo" novalidate>
+            <h2>Venda</h2>
+            <p class="venda__vazia" id="venda-vazia">Ainda não juntou nenhum produto.</p>
+            <ul class="venda__linhas" id="linhas-venda"></ul>
+            <p class="venda__total"><span>Total</span> <strong id="total-venda">0,00 €</strong></p>
+
+            <fieldset class="campo" data-erro="Escolha como o cliente paga.">
+              <legend>Pagamento</legend>
+              <div class="opcoes">
+                <label class="opcao opcao--grande"><input type="radio" name="metodo" value="dinheiro" required> Dinheiro</label>
+                <label class="opcao opcao--grande"><input type="radio" name="metodo" value="mbway" required> MB WAY</label>
+              </div>
+              <p class="campo__erro"></p>
+            </fieldset>
+
+            <div class="campo">
+              <label for="cliente">Nome do cliente <span class="campo__opcional">(opcional, sai no recibo)</span></label>
+              <input id="cliente" name="cliente" type="text" maxlength="80" autocomplete="off">
+            </div>
+
+            <p id="erro-venda" class="aviso aviso--erro" role="alert" hidden></p>
+            <button class="botao botao--largo" type="submit" id="registar-venda" disabled>Registar venda</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Encomendas: estado, dia da entrega e recibo -->
+      <section id="painel-encomendas" role="tabpanel" aria-labelledby="sep-encomendas" hidden>
+        <div class="campo procura">
+          <label for="procura">Procurar encomenda</label>
+          <input id="procura" type="search" placeholder="Número, nome ou telemóvel" autocomplete="off">
+        </div>
+        <p id="aviso-encomendas" class="aviso aviso--sucesso" role="status" hidden></p>
+        <h2 class="painel__titulo" id="titulo-lista"></h2>
+        <div class="lista-encomendas" id="lista-encomendas"></div>
+      </section>
+
+      <!-- Dias livres: quantas encomendas e quilos já há em cada dia -->
+      <section id="painel-dias" role="tabpanel" aria-labelledby="sep-dias" hidden>
+        <div class="cartao agenda">
+          <h2 class="painel__titulo">Dias de entrega</h2>
+          <p class="painel__intro">Em cada dia: encomendas marcadas (máximo 10) e peso total (máximo 10 kg). Os dias riscados estão cheios. Ao domingo não há entregas.</p>
+          <div class="calendario" id="agenda"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <dialog class="dialogo" id="dialogo-venda" aria-labelledby="titulo-venda">
+    <p class="sobretitulo">Venda registada</p>
+    <h2 id="titulo-venda">Venda n.º <span data-campo="numero"></span></h2>
+    <p><strong data-campo="total"></strong> pagos em <span data-campo="metodo"></span>.</p>
+    <div class="acoes">
+      <button class="botao" type="button" id="recibo-venda">Imprimir recibo</button>
+      <button class="botao botao--secundario" type="button" id="nova-venda">Nova venda</button>
+    </div>
+  </dialog>
+
+  <!-- A mesma janela existe no entregador.html; quem a preenche é o escolherOutroDia (js/comum.js). -->
+  <dialog class="dialogo dialogo--largo" id="dialogo-dia" aria-labelledby="titulo-dia">
+    <form novalidate>
+      <p class="sobretitulo">Encomenda n.º <span data-campo="numero"></span></p>
+      <h2 id="titulo-dia">Mudar o dia da entrega</h2>
+      <p class="dialogo__nota">Agora: <span data-campo="atual"></span>. Só se podem escolher os dias com lugar para esta encomenda (<span data-campo="peso"></span>).</p>
+      <div class="campos">
+        <fieldset class="campo" data-erro="Escolha o novo dia.">
+          <legend>Novo dia</legend>
+          <div class="calendario"></div>
+          <p class="campo__erro"></p>
+        </fieldset>
+        <div class="campo campo--medio" data-erro="Escolha a hora.">
+          <label for="hora">Hora</label>
+          <select id="hora" name="hora" required></select>
+          <p class="campo__erro"></p>
+        </div>
+        <p class="aviso aviso--erro" data-campo="erro" role="alert" hidden></p>
+      </div>
+      <div class="acoes">
+        <button class="botao" type="submit">Guardar</button>
+        <button class="botao botao--secundario" type="button" data-acao="cancelar">Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <template id="modelo-stock">
+    <button class="stock__produto" type="button">
+      <img class="stock__foto" src="" alt="" width="900" height="600">
+      <span class="stock__corpo">
+        <span class="stock__nome"></span>
+        <span class="stock__preco"></span>
+        <span class="stock__resta"></span>
+      </span>
+      <span class="stock__na-venda" aria-hidden="true"></span>
+    </button>
+  </template>
+
+  <template id="modelo-encomenda">
+    <article class="cartao encomenda">
+      <div class="encomenda__topo">
+        <h3>N.º <span data-campo="numero"></span></h3>
+        <span class="etiqueta" data-campo="estado"></span>
+      </div>
+      <dl class="detalhes"></dl>
+      <div class="encomenda__acoes">
+        <button class="botao botao--pequeno" type="button" data-acao="mudar-dia">Mudar dia</button>
+        <button class="botao botao--secundario botao--pequeno" type="button" data-acao="recibo">Recibo</button>
+      </div>
+    </article>
+  </template>
+</body>
+</html>

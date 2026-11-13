@@ -1125,6 +1125,7 @@ a {
   color: var(--texto-suave);
   font-size: 0.66rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .dia:hover {
@@ -1557,6 +1558,448 @@ a {
   }
 }
 
+/* Páginas dos funcionários: o mesmo estilo, mas a funcionar como ferramenta */
+
+.sessao {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.sessao__quem {
+  overflow: hidden;
+  color: var(--texto-suave);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sessao__quem strong {
+  color: var(--texto);
+}
+
+.pagina--equipa {
+  padding-top: clamp(24px, 4vw, 40px);
+}
+
+.pagina--equipa h1 {
+  font-size: clamp(2rem, 4vw, 2.6rem);
+}
+
+.separadores {
+  display: flex;
+  gap: 4px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 4px 0 32px;
+  padding: 5px;
+  overflow-x: auto;
+  border-radius: 999px;
+  background: var(--lavanda);
+}
+
+.separadores [role='tab'] {
+  flex: none;
+  padding: 0.65em 1.4em;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--texto);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.separadores [role='tab']:hover {
+  color: var(--acento-escuro);
+}
+
+.separadores [role='tab'][aria-selected='true'] {
+  background: var(--branco);
+  color: var(--acento-escuro);
+  box-shadow: 0 2px 10px rgb(53 40 61 / 0.12);
+}
+
+.painel__titulo {
+  font-size: 1.5rem;
+}
+
+.painel__intro {
+  margin-top: 0;
+  color: var(--texto-suave);
+}
+
+.aviso--sucesso {
+  background: var(--sucesso-fundo);
+  color: var(--sucesso-texto);
+  font-weight: 600;
+}
+
+.dialogo--largo {
+  width: min(560px, 100% - 24px);
+}
+
+.dialogo .acoes {
+  margin-top: 20px;
+}
+
+/* Balcão: produtos do dia (stock) e a venda */
+
+.venda {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 32px;
+  align-items: start;
+}
+
+.stock {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.stock__produto {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 18px;
+  background: var(--branco);
+  box-shadow: var(--sombra);
+  color: var(--texto);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.stock__produto:hover:not(:disabled) {
+  border-color: var(--lavanda-forte);
+  transform: translateY(-3px);
+}
+
+.stock__produto:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.stock__produto:has(.stock__na-venda:not(:empty)) {
+  border-color: var(--acento);
+}
+
+.stock__produto:disabled {
+  cursor: not-allowed;
+}
+
+.stock__produto--esgotado {
+  opacity: 0.6;
+}
+
+.stock__produto--esgotado .stock__foto {
+  filter: grayscale(1);
+}
+
+.stock__foto {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+.stock__corpo {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  padding: 12px 14px 14px;
+}
+
+.stock__nome {
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.stock__preco {
+  color: var(--acento-escuro);
+  font-weight: 700;
+}
+
+.stock__resta {
+  justify-self: start;
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+}
+
+/* Poucas unidades: o Filipe vê logo, sem ir à cozinha. */
+.stock__produto--poucos .stock__resta {
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--pessego);
+  color: var(--acento-escuro);
+  font-weight: 700;
+}
+
+.stock__na-venda {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--acento);
+  color: var(--branco);
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgb(53 40 61 / 0.25);
+}
+
+.stock__na-venda:empty {
+  display: none;
+}
+
+.venda__resumo {
+  position: sticky;
+  top: 92px;
+  display: grid;
+  gap: 16px;
+}
+
+.venda__resumo h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.venda__resumo .opcoes {
+  grid-template-columns: 1fr 1fr;
+}
+
+.venda__vazia {
+  margin: 0;
+  color: var(--texto-suave);
+}
+
+.venda__linhas {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.venda__linhas:empty {
+  display: none;
+}
+
+.venda__linha {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 6px 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--linha);
+}
+
+.venda__nome {
+  grid-column: 1 / -1;
+  font-weight: 700;
+}
+
+.venda__preco {
+  font-weight: 700;
+}
+
+.venda__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0;
+  font-weight: 700;
+}
+
+.venda__total strong {
+  font-family: var(--fonte-titulos);
+  font-size: 1.7rem;
+}
+
+.contador--pequeno button {
+  width: 42px;
+  height: 42px;
+}
+
+.contador--pequeno span {
+  min-width: 30px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.contador button:disabled {
+  background: transparent;
+  color: var(--linha);
+  cursor: not-allowed;
+}
+
+.opcao--grande {
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.opcao--grande input {
+  margin: 0;
+}
+
+/* Balcão: encomendas e dias livres */
+
+.procura {
+  max-width: 480px;
+  margin-bottom: 24px;
+}
+
+.lista-encomendas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
+  gap: 20px;
+}
+
+.lista-encomendas:empty {
+  display: none;
+}
+
+.encomenda {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+}
+
+.encomenda__topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+
+.encomenda__topo h3 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.encomenda .detalhes {
+  font-size: 0.95rem;
+}
+
+.encomenda__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.encomenda--alterada {
+  animation: destacar 2.5s ease;
+}
+
+#aviso-encomendas {
+  margin-bottom: 20px;
+}
+
+.agenda {
+  max-width: 720px;
+}
+
+.agenda .calendario {
+  max-width: none;
+}
+
+.agenda .dia {
+  min-height: 72px;
+}
+
+.agenda .dia small {
+  font-size: 0.75rem;
+}
+
+.calendario--leitura .dia,
+.calendario--leitura .dia:hover {
+  border-color: var(--linha);
+  cursor: default;
+}
+
+.calendario--leitura .dia--fechado {
+  border-color: transparent;
+}
+
+@media (max-width: 760px) {
+  .topo:has(.sessao) .logo {
+    font-size: 1.1rem;
+  }
+
+  .sessao__papel {
+    display: none;
+  }
+
+  .separadores {
+    width: 100%;
+  }
+
+  .separadores [role='tab'] {
+    flex: 1 1 auto;
+    padding-inline: 0.8em;
+    white-space: nowrap;
+  }
+
+  .dialogo--largo {
+    padding-inline: 16px;
+  }
+
+  .dialogo--largo .dia small {
+    font-size: 0.6rem;
+  }
+
+  .venda {
+    grid-template-columns: 1fr;
+  }
+
+  .venda__resumo {
+    position: static;
+  }
+
+  /* No telemóvel, cada produto é uma linha: foto pequena à esquerda. */
+  .stock {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .stock__produto {
+    grid-template-rows: none;
+    grid-template-columns: 96px 1fr;
+  }
+
+  .stock__foto {
+    height: 100%;
+    aspect-ratio: auto;
+  }
+
+  .stock__corpo {
+    padding-right: 60px;
+  }
+
+  .stock__na-venda {
+    top: 50%;
+    right: 14px;
+    translate: 0 -50%;
+  }
+
+  .agenda .dia {
+    min-height: 60px;
+  }
+
+  .agenda .dia small {
+    font-size: 0.66rem;
+  }
+}
+
 /* Telemóvel */
 
 @media (max-width: 760px) {
@@ -1697,6 +2140,12 @@ a {
 @keyframes rodar {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes destacar {
+  from {
+    box-shadow: 0 0 0 4px var(--acento), var(--sombra);
   }
 }
 
