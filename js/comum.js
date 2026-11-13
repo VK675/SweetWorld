@@ -15,6 +15,31 @@ function criarElemento(etiqueta, propriedades = {}, ...filhos) {
   return elemento;
 }
 
+/* ---------- Páginas dos funcionários ---------- */
+
+const PAGINAS_FUNCIONARIOS = {
+  balcao: 'balcao.html',
+  producao: 'producao.html',
+  entregador: 'entregador.html',
+  gerente: 'gerente.html',
+};
+
+// No início de cada página de funcionário: quem não entrou com esta função vai para o
+// entrar.html (e volta depois). Mostra o nome no topo e liga o botão "Sair".
+function protegerPagina(papel) {
+  const sessao = obterSessao();
+  if (sessao?.papel !== papel) {
+    location.replace(`entrar.html?voltar=${papel}`);
+    throw new Error('Sessão em falta.');
+  }
+  for (const elemento of document.querySelectorAll('[data-sessao="nome"]')) elemento.textContent = sessao.nome;
+  document.querySelector('[data-sessao="sair"]')?.addEventListener('click', () => {
+    terminarSessao();
+    location.href = 'entrar.html';
+  });
+  return sessao;
+}
+
 /* ---------- Resumo da encomenda ---------- */
 
 // Preenche um <dl class="detalhes"> com pares [rótulo, valor]. Os valores vazios não aparecem.

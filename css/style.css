@@ -256,6 +256,115 @@ a {
   stroke-linecap: round;
 }
 
+.topo__voltar {
+  color: var(--texto);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.topo__voltar:hover {
+  color: var(--acento-escuro);
+}
+
+/* Área de funcionários: escolher a função */
+
+.papeis {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.papel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 1.5px solid var(--linha);
+  border-radius: 16px;
+  background: var(--fundo);
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, transform 0.2s;
+}
+
+.papel:hover {
+  border-color: var(--lavanda-forte);
+  transform: translateY(-2px);
+}
+
+.papel input {
+  position: absolute;
+  opacity: 0;
+}
+
+.papel strong,
+.papel small {
+  display: block;
+}
+
+.papel strong {
+  font-size: 1.1rem;
+}
+
+.papel small {
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.papel__icone {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--pessego);
+  color: var(--acento-escuro);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.papel__icone svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.papel:has(input:checked) {
+  border-color: var(--acento);
+  background: var(--lavanda-clara);
+}
+
+.papel:has(input:checked) .papel__icone {
+  background: var(--acento);
+  color: var(--branco);
+}
+
+.papel:has(input:focus-visible) {
+  outline: 3px solid var(--acento);
+  outline-offset: 2px;
+}
+
+.campo--erro .papel {
+  border-color: var(--erro);
+}
+
+.entrar__nota {
+  margin-top: 10px;
+}
+
+.ja-entrou {
+  margin-bottom: 24px;
+}
+
+.ja-entrou p {
+  margin-top: 0;
+}
+
 /* Destaque (primeiro ecrã) */
 
 .destaque {
@@ -1496,7 +1605,8 @@ a {
   .rodape__grelha,
   .encomendar,
   .campos-2,
-  .opcoes {
+  .opcoes,
+  .papeis {
     grid-template-columns: 1fr;
   }
 

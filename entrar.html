@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Área de funcionários — Doces &amp; Companhia</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Nunito:wght@400;600;700&display=swap">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍰</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/dados.js" defer></script>
+  <script src="js/dados-demo.js" defer></script>
+  <script src="js/comum.js" defer></script>
+  <script src="js/entrar.js" defer></script>
+</head>
+<body>
+  <header class="topo">
+    <div class="contentor topo__linha">
+      <a class="logo" href="index.html">Doces <span>&amp;</span> Companhia</a>
+      <a class="topo__voltar" href="index.html">← Voltar ao site</a>
+    </div>
+  </header>
+
+  <main class="pagina">
+    <div class="contentor estreito">
+      <p class="sobretitulo">Equipa</p>
+      <h1>Área de funcionários</h1>
+      <p class="pagina__intro">Escolha a sua função e escreva o seu nome. O nome fica guardado em tudo o que fizer, para se saber sempre quem tratou de cada encomenda.</p>
+
+      <section id="ja-entrou" class="cartao ja-entrou" hidden>
+        <p>Já entrou como <strong data-campo="nome"></strong> (<span data-campo="papel"></span>).</p>
+        <div class="acoes">
+          <a class="botao" id="continuar" href="#">Continuar</a>
+          <button class="botao botao--secundario" type="button" id="sair">Sair</button>
+        </div>
+      </section>
+
+      <form id="form-entrar" class="cartao formulario" novalidate>
+        <fieldset class="campo" data-erro="Escolha a sua função.">
+          <legend>A sua função</legend>
+          <div class="papeis">
+            <label class="papel">
+              <input type="radio" name="papel" value="balcao" required>
+              <span class="papel__icone" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 10h16v10H4zM3 10l2-6h14l2 6M9 20v-5h6v5"/></svg>
+              </span>
+              <span><strong>Balcão</strong><small>Vendas na loja, stock e datas de entrega</small></span>
+            </label>
+            <label class="papel">
+              <input type="radio" name="papel" value="producao" required>
+              <span class="papel__icone" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M6 13a4 4 0 1 1 2-7.5 4 4 0 0 1 8 0A4 4 0 1 1 18 13v7H6zM6 17h12"/></svg>
+              </span>
+              <span><strong>Produção</strong><small>Encomendas por fazer e etiquetas</small></span>
+            </label>
+            <label class="papel">
+              <input type="radio" name="papel" value="entregador" required>
+              <span class="papel__icone" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M3 6h11v10H3zM14 10h4l3 3v3h-7M7.5 19a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM17.5 19a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/></svg>
+              </span>
+              <span><strong>Entregador</strong><small>Entregas do dia, no telemóvel</small></span>
+            </label>
+            <label class="papel">
+              <input type="radio" name="papel" value="gerente" required>
+              <span class="papel__icone" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+              </span>
+              <span><strong>Gerente</strong><small>Produtos, encomendas, SMS e relatórios</small></span>
+            </label>
+          </div>
+          <p class="campo__erro"></p>
+        </fieldset>
+
+        <div class="campo campo--medio" data-erro="Escreva o seu nome (pelo menos 2 letras).">
+          <label for="nome">O seu nome</label>
+          <input id="nome" name="nome" type="text" autocomplete="name" minlength="2" maxlength="40" pattern=".*\S.*\S.*" required>
+          <p class="campo__erro"></p>
+        </div>
+
+        <p id="erro-entrar" class="aviso aviso--erro" role="alert" hidden></p>
+
+        <div>
+          <button class="botao" type="submit">Entrar</button>
+          <p class="campo__ajuda entrar__nota">Protótipo escolar: não há palavra-passe.</p>
+        </div>
+      </form>
+    </div>
+  </main>
+</body>
+</html>
