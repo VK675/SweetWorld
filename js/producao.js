@@ -35,15 +35,15 @@ function cartaoPedido(encomenda) {
   const produto = obterProduto(linha.produtoId);
   const { texto, velas, notas } = encomenda.personalizacao;
   const pendente = encomenda.estado === 'pendente';
-  const prazo = cartao.querySelector('.pedido__prazo');
+  const prazo = cartao.querySelector('.prazo');
   const foto = cartao.querySelector('.pedido__foto');
   const quem = cartao.querySelector('.pedido__quem');
   const botao = cartao.querySelector('button');
 
   cartao.dataset.numero = encomenda.numero;
   prazo.textContent = descreverPrazo(encomenda.entrega);
-  prazo.classList.toggle('pedido__prazo--hoje', encomenda.entrega.data === hoje());
-  prazo.classList.toggle('pedido__prazo--atrasada', encomenda.entrega.data < hoje());
+  prazo.classList.toggle('prazo--hoje', encomenda.entrega.data === hoje());
+  prazo.classList.toggle('prazo--atrasada', encomenda.entrega.data < hoje());
   cartao.querySelector('.pedido__numero').textContent = `N.º ${encomenda.numero}`;
   if (produto) foto.src = produto.foto;
   else foto.remove();
@@ -95,7 +95,7 @@ function desenhar() {
   document.querySelector('#vazia-prontas').hidden = prontas.length > 0;
 
   document.querySelector('#prontas').replaceChildren(...prontas.map(({ encomenda, registo }) =>
-    criarElemento('li', { className: 'pronta', 'data-numero': encomenda.numero },
+    criarElemento('li', { className: 'resumo-dia__item', 'data-numero': encomenda.numero },
       criarElemento('div', {},
         criarElemento('strong', { textContent: `N.º ${encomenda.numero} · ${encomenda.cliente.nome}` }),
         criarElemento('span', { textContent: descreverLinhas(encomenda) }),

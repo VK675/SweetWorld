@@ -856,6 +856,16 @@ function prontasNoDia(data = hoje()) {
     .sort((a, b) => a.registo.em.localeCompare(b.registo.em));
 }
 
+// O que o Entregador fez num dia: entregas, idas para o armazém e remarcações, com a hora.
+// Michael passava isto para o Excel no fim do dia; agora fica feito sozinho.
+function entregasNoDia(data = hoje()) {
+  return listarEncomendas()
+    .flatMap((encomenda) => encomenda.historico
+      .filter((registo) => registo.papel === 'entregador' && dataLocal(new Date(registo.em)) === data)
+      .map((registo) => ({ encomenda, registo })))
+    .sort((a, b) => a.registo.em.localeCompare(b.registo.em));
+}
+
 /* ---------- Produtos do dia e vendas ao balcão ---------- */
 
 function listarVendas() {

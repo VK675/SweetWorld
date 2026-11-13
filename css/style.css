@@ -2014,7 +2014,7 @@ a {
   gap: 8px;
 }
 
-.pedido__prazo {
+.prazo {
   padding: 0.25em 0.8em;
   border-radius: 999px;
   background: var(--lavanda);
@@ -2022,11 +2022,11 @@ a {
   font-weight: 700;
 }
 
-.pedido__prazo--hoje {
+.prazo--hoje {
   background: var(--pessego);
 }
 
-.pedido__prazo--atrasada {
+.prazo--atrasada {
   background: var(--erro-fundo);
   color: var(--erro-texto);
 }
@@ -2119,7 +2119,7 @@ a {
   margin-bottom: 14px;
 }
 
-.prontas {
+.resumo-dia {
   display: grid;
   gap: 10px;
   margin: 0;
@@ -2127,11 +2127,11 @@ a {
   list-style: none;
 }
 
-.prontas:empty {
+.resumo-dia:empty {
   display: none;
 }
 
-.pronta {
+.resumo-dia__item {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2141,12 +2141,12 @@ a {
   background: var(--branco);
 }
 
-.pronta div {
+.resumo-dia__item div {
   display: grid;
   min-width: 0;
 }
 
-.pronta small {
+.resumo-dia__item small {
   color: var(--texto-suave);
 }
 
@@ -2205,6 +2205,209 @@ a {
 .rotulo__feito {
   margin-top: 2mm;
   font-size: 9pt;
+}
+
+/* Entregador: pensado para o telemóvel do Michael */
+
+.atalhos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 28px;
+}
+
+.atalhos a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px 6px 14px;
+  border-radius: 999px;
+  background: var(--lavanda);
+  color: var(--texto);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.atalhos a:hover {
+  background: var(--lavanda-forte);
+}
+
+.atalhos .coluna__conta {
+  height: 28px;
+}
+
+.seccao-entregas {
+  margin-bottom: 40px;
+  scroll-margin-top: 88px;
+}
+
+.entregas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(360px, 100%), 1fr));
+  gap: 16px;
+}
+
+.entregas:empty {
+  display: none;
+}
+
+.entrega {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 18px;
+  background: var(--branco);
+  box-shadow: var(--sombra);
+}
+
+/* Ainda na cozinha: aparece, mas sem botões. */
+.entrega--espera {
+  background: var(--lavanda-clara);
+  box-shadow: none;
+}
+
+.entrega__topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.entrega__numero {
+  color: var(--texto-suave);
+  font-weight: 700;
+}
+
+.entrega__cliente {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.entrega__produto {
+  margin: 4px 0 0;
+  color: var(--texto-suave);
+  font-weight: 600;
+}
+
+.entrega__contactos {
+  display: grid;
+  gap: 8px;
+}
+
+.contacto {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--lavanda-clara);
+  color: var(--texto);
+  font-weight: 700;
+  line-height: 1.3;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.entrega--espera .contacto {
+  background: var(--branco);
+}
+
+.contacto:hover {
+  background: var(--lavanda);
+}
+
+.contacto svg {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: var(--acento-escuro);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.contacto small {
+  display: block;
+  color: var(--acento-escuro);
+  font-size: 0.85rem;
+}
+
+.entrega__nota {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--pessego-claro);
+  font-weight: 600;
+}
+
+/* Os botões ficam lado a lado, cada um com a mesma largura. */
+.entrega__acoes {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-auto-flow: column;
+  gap: 10px;
+}
+
+.entrega__acoes:empty {
+  display: none;
+}
+
+.entrega__acoes .botao {
+  padding-inline: 0.5em;
+}
+
+.falhas {
+  display: grid;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.falha {
+  display: grid;
+  gap: 4px;
+  padding: 16px 18px;
+  border: 2px solid var(--linha);
+  border-radius: 16px;
+  background: var(--fundo);
+  color: var(--texto);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.falha:hover {
+  border-color: var(--acento);
+  background: var(--lavanda-clara);
+}
+
+.falha strong {
+  font-size: 1.2rem;
+}
+
+.falha > span {
+  color: var(--texto-suave);
+}
+
+.resumo-dia .etiqueta {
+  flex: none;
+}
+
+/* Aviso que aparece em baixo depois de cada ação e desaparece sozinho. */
+.mensagem {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  z-index: 20;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  box-shadow: 0 12px 30px rgb(53 40 61 / 0.18);
+  translate: -50% 0;
+  animation: aparecer 0.3s ease both;
 }
 
 @media (max-width: 1000px) and (min-width: 761px) {
