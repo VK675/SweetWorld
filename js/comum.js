@@ -157,6 +157,28 @@ function descreverLinhas(registo) {
   return registo.linhas.map((linha) => `${linha.quantidade} × ${linha.nome}`).join(', ');
 }
 
+// Para ordenar as encomendas pela entrega: "2026-11-13 15:00".
+function momentoDaEntrega(encomenda) {
+  return `${encomenda.entrega.data} ${encomenda.entrega.hora}`;
+}
+
+// O resultado de cada ida do Entregador, abreviado (para as listas do dia).
+const RESULTADOS_ENTREGA = { entregue: 'Entregue', 'no-armazem': 'Armazém', remarcada: 'Remarcada' };
+
+// Uma linha de uma lista .resumo-dia: título, texto, rodapé e, nas entregas, o resultado.
+function itemResumo(titulo, texto, rodape, estado = '') {
+  const item = criarElemento('li', { className: 'resumo-dia__item' },
+    criarElemento('div', {},
+      criarElemento('strong', { textContent: titulo }),
+      criarElemento('span', { textContent: texto }),
+      criarElemento('small', { textContent: rodape }),
+    ));
+  if (estado) {
+    item.append(criarElemento('span', { className: 'etiqueta', 'data-estado': estado, textContent: RESULTADOS_ENTREGA[estado] }));
+  }
+  return item;
+}
+
 // "«Parabéns, Ana!» · velas 8 · sem frutos secos"
 function descreverPersonalizacao({ texto, velas, notas }) {
   return [texto && `«${texto}»`, velas && `velas ${velas}`, notas].filter(Boolean).join(' · ');

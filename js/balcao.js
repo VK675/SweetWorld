@@ -84,7 +84,8 @@ function desenharVenda(stock) {
 }
 
 function desenharVender() {
-  const stock = produtosDoDia();
+  // Se o Gerente tirar um produto de venda a meio do dia, deixa de aparecer aqui.
+  const stock = produtosDoDia().filter((s) => s.produto.ativo && s.produto.naLoja);
   acertarVenda(stock);
   desenharStock(stock);
   desenharVenda(stock);
@@ -148,8 +149,6 @@ const procura = document.querySelector('#procura');
 const listaEncomendas = document.querySelector('#lista-encomendas');
 const modeloEncomenda = document.querySelector('#modelo-encomenda');
 const avisoEncomendas = document.querySelector('#aviso-encomendas');
-
-const momentoDaEntrega = (encomenda) => `${encomenda.entrega.data} ${encomenda.entrega.hora}`;
 
 // Sem pesquisa: as que ainda vão sair (ou esperam no armazém), da mais próxima para a mais distante.
 // Com pesquisa: todas as que coincidem, da mais recente para a mais antiga.

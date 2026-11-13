@@ -6,7 +6,7 @@ const campos = formulario.elements;
 const calendario = document.querySelector('#calendario');
 const erroEncomenda = document.querySelector('#erro-encomenda');
 const dialogoMbway = document.querySelector('#dialogo-mbway');
-const produtosAVenda = listarProdutos().filter((p) => p.ativo && p.porEncomenda);
+let produtosAVenda = listarProdutos().filter((p) => p.ativo && p.porEncomenda);
 
 /* ---------- Preparar o formulário ---------- */
 
@@ -37,6 +37,23 @@ for (const hora of HORAS_ENTREGA) campos.hora.add(new Option(hora));
 const produtoPedido = new URLSearchParams(location.search).get('produto');
 for (const radio of formulario.querySelectorAll('input[name="produto"]')) {
   radio.checked = radio.value === produtoPedido;
+}
+
+// O Gerente mudou um preço ou tirou um produto de venda noutra aba:
+// os cartões e o resumo passam a mostrar o que vai mesmo ser cobrado.
+function atualizarCatalogo() {
+  produtosAVenda = listarProdutos().filter((p) => p.ativo && p.porEncomenda);
+  for (const radio of formulario.querySelectorAll('input[name="produto"]')) {
+    const produto = produtosAVenda.find((p) => p.id === radio.value);
+    radio.disabled = !produto;
+    if (!produto) {
+      radio.checked = false;
+      continue;
+    }
+    const cartao = radio.closest('.escolha');
+    cartao.querySelector('.escolha__nome').textContent = produto.nome;
+    cartao.querySelector('.escolha__preco').textContent = formatarPreco(produto.preco);
+  }
 }
 
 /* ---------- O que o cliente escolheu ---------- */
@@ -174,10 +191,7 @@ campos.telefone.addEventListener('input', () => {
 /* ---------- Pagar e confirmar ---------- */
 
 function mostrarErro(falha) {
-  // Um erro do navegador (DOMException) quer dizer que não deixou guardar os dados.
-  erroEncomenda.textContent = falha instanceof DOMException
-    ? 'Não foi possível guardar a encomenda neste navegador. Saia do modo privado e tente de novo.'
-    : falha.message;
+  erroEncomenda.textContent = mensagemDeErro(falha);
   erroEncomenda.hidden = false;
   erroEncomenda.scrollIntoView({ block: 'center' });
 
@@ -206,10 +220,9 @@ function mostrarConfirmacao(encomenda) {
 // e só então a encomenda é criada, já paga.
 let esperaDoPagamento = null;
 
-function pedirPagamento(dados) {
-  const produto = produtoEscolhido();
-  dialogoMbway.querySelector('[data-campo="total"]').textContent =
-    formatarPreco(produto.preco * dados.linhas[0].quantidade);
+// total: o valor da encomenda já validada, com os preços que estão agora no catálogo.
+function pedirPagamento(dados, total) {
+  dialogoMbway.querySelector('[data-campo="total"]').textContent = formatarPreco(total);
   dialogoMbway.querySelector('[data-campo="telefone"]').textContent = formatarTelefone(dados.pagamento.telefone);
   dialogoMbway.showModal();
 
@@ -233,24 +246,26 @@ formulario.addEventListener('submit', (evento) => {
 
   // As regras (dia cheio, região de Lisboa…) são confirmadas antes de pedir o pagamento.
   const dados = lerFormulario();
+  let validada;
   try {
-    validarEncomenda(dados);
+    validada = validarEncomenda(dados);
   } catch (falha) {
     mostrarErro(falha);
     return;
   }
   erroEncomenda.hidden = true;
-  pedirPagamento(dados);
+  pedirPagamento(dados, totalDe(validada));
 });
 
 formulario.addEventListener('input', atualizarTudo);
 formulario.addEventListener('change', atualizarTudo);
 limparErrosAoCorrigir(formulario);
 
-// Se outra aba marcar uma encomenda, os dias livres podem mudar.
+// Se outra aba marcar uma encomenda ou mudar o catálogo, os dias livres e os preços acompanham.
 aoMudarDados(() => {
+  atualizarCatalogo();
   pesoNoCalendario = null;
-  atualizarCalendario();
+  atualizarTudo();
 });
 
 atualizarTudo();

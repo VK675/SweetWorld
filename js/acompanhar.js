@@ -53,12 +53,16 @@ function mostrarEstado(encomenda) {
   resultado.hidden = false;
 }
 
+// O que o cliente escreveu na última procura: é essa a encomenda que está no ecrã.
+let procurada = null;
+
 function procurar() {
   resultado.hidden = true;
   naoEncontrada.hidden = true;
   if (!validarFormulario(formulario)) return;
 
-  const encomenda = procurarEncomenda(campos.numero.value.trim(), campos.telefone.value);
+  procurada = { numero: campos.numero.value.trim(), telefone: campos.telefone.value };
+  const encomenda = procurarEncomenda(procurada.numero, procurada.telefone);
   if (encomenda) {
     mostrarEstado(encomenda);
     resultado.focus();
@@ -76,10 +80,11 @@ formulario.addEventListener('submit', (evento) => {
   procurar();
 });
 
-// Se a cozinha ou o estafeta mudarem o estado noutra aba, o cartão acompanha.
+// Se a cozinha ou o estafeta mudarem o estado noutra aba, o cartão acompanha
+// (a encomenda que está no ecrã, mesmo que o cliente já esteja a escrever outro número).
 aoMudarDados(() => {
   if (resultado.hidden) return;
-  const encomenda = procurarEncomenda(campos.numero.value.trim(), campos.telefone.value);
+  const encomenda = procurarEncomenda(procurada.numero, procurada.telefone);
   if (encomenda) mostrarEstado(encomenda);
 });
 

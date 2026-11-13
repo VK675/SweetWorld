@@ -1018,6 +1018,12 @@ a {
   border-color: var(--erro);
 }
 
+/* O produto saiu de venda enquanto a página estava aberta. */
+.escolha:has(input:disabled) {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 /* Quantidade com botões − e + */
 
 .contador {

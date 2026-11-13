@@ -262,7 +262,7 @@ const PRODUTOS_INICIAIS = [
 /* ---------- Armazenamento ---------- */
 
 // Quando o formato dos dados muda, sobe-se a versão e os dados antigos são substituídos.
-const VERSAO_DADOS = '3';
+const VERSAO_DADOS = '4';
 
 const CHAVES = {
   versao: 'dc.versao',
@@ -328,8 +328,12 @@ function reporDadosDemo() {
 
 // Outra aba (por exemplo, a da Produção) alterou os dados: a página pode redesenhar-se.
 function aoMudarDados(reagir) {
+  let espera = null;
   window.addEventListener('storage', (evento) => {
-    if (evento.storageArea === localStorage && (evento.key === null || evento.key.startsWith('dc.'))) reagir();
+    if (evento.storageArea !== localStorage || !(evento.key === null || evento.key.startsWith('dc.'))) return;
+    // Uma ação pode gravar várias chaves de seguida: a página redesenha-se uma só vez.
+    clearTimeout(espera);
+    espera = setTimeout(reagir, 50);
   });
 }
 
@@ -528,6 +532,10 @@ function guardarProduto(dados) {
   if (!(produto.preco > 0)) throw new Error('O preço tem de ser maior do que zero.');
   if (!(produto.custo >= 0)) throw new Error('Escreva o custo de produção.');
   if (!(produto.peso > 0)) throw new Error('Escreva o peso em quilos.');
+  // Um produto mais pesado do que o limite de um dia nunca poderia ser encomendado.
+  if (produto.porEncomenda && produto.peso > MAX_KG_DIA) {
+    throw new Error(`Por encomenda, o peso não pode passar dos ${MAX_KG_DIA} kg (escreva-o em quilos).`);
+  }
   if (!produto.porEncomenda && !produto.naLoja) {
     throw new Error('Escolha onde se vende: por encomenda, na loja ou nos dois.');
   }
@@ -697,7 +705,8 @@ function validarEncomenda(dados) {
   }
   validarDiaEHora(entrega.data, entrega.hora, kg);
 
-  const velas = limparTexto(dados.personalizacao?.velas);
+  // As velas só contam nos produtos que as levam: nos outros o campo nem aparece.
+  const velas = personalizavel ? limparTexto(dados.personalizacao?.velas) : '';
   if (!/^\d{0,3}$/.test(velas)) throw new Error('As velas são um número, por exemplo 8 ou 30.');
   if (dados.pagamento.metodo !== 'mbway') throw new Error('No site o pagamento é por MB WAY.');
 
@@ -711,7 +720,7 @@ function validarEncomenda(dados) {
     // Só os bolos levam texto e velas; as notas servem para qualquer produto.
     personalizacao: {
       texto: personalizavel ? limparTexto(dados.personalizacao?.texto).slice(0, 40) : '',
-      velas: personalizavel ? velas : '',
+      velas,
       notas: limparTexto(dados.personalizacao?.notas).slice(0, 200),
     },
     entrega,
@@ -969,7 +978,11 @@ function definirProdutosDoDia(quantidades) {
   exigirSessao('gerente');
   const produtos = listarProdutos();
   const vendidos = Object.fromEntries(produtosDoDia().map((p) => [p.produto.id, p.vendido]));
-  const doDia = {};
+  const stock = lerDados(CHAVES.stock, {});
+  // Os produtos que não vêm na lista (por exemplo, um que saiu de venda a meio do dia)
+  // ficam como estavam: o que já se fez e vendeu hoje não desaparece do resumo do dia.
+  const doDia = { ...stock[hoje()] };
+  for (const id of Object.keys(quantidades)) delete doDia[id];
 
   for (const [id, valor] of Object.entries(quantidades)) {
     const produto = produtos.find((p) => p.id === id);
@@ -984,7 +997,6 @@ function definirProdutosDoDia(quantidades) {
     if (quantidade > 0) doDia[id] = quantidade;
   }
 
-  const stock = lerDados(CHAVES.stock, {});
   stock[hoje()] = doDia;
   gravarDados(CHAVES.stock, stock);
 }
@@ -1002,6 +1014,8 @@ function registarVenda(dados) {
   const linhas = dados.linhas.map(({ produtoId, quantidade }) => {
     const doDia = stock.find((s) => s.produto.id === produtoId);
     if (!doDia) throw new Error('Este produto não está nos produtos do dia.');
+    // O Gerente tirou-o de venda a meio do dia: o Balcão deixa de o vender.
+    if (!doDia.produto.ativo || !doDia.produto.naLoja) throw new Error(`${doDia.produto.nome} já não está à venda na loja.`);
     if (!Number.isInteger(quantidade) || quantidade < 1) throw new Error('Escolha a quantidade.');
     if (quantidade > doDia.restante) {
       throw new Error(doDia.restante === 0

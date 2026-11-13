@@ -11,11 +11,6 @@ const dialogoRecebida = document.querySelector('#dialogo-recebida');
 const formRecebida = dialogoRecebida.querySelector('form');
 const dialogoFalhou = document.querySelector('#dialogo-falhou');
 
-// Na lista «Feitas hoje» os estados vão abreviados.
-const RESULTADOS = { entregue: 'Entregue', 'no-armazem': 'Armazém', remarcada: 'Remarcada' };
-
-const momentoDaEntrega = (encomenda) => `${encomenda.entrega.data} ${encomenda.entrega.hora}`;
-
 /* ---------- Listas ---------- */
 
 // opcoes: prazo (texto da etiqueta), estilo ('hoje' ou 'atrasada'), nota,
@@ -93,14 +88,8 @@ function cartaoNoArmazem(encomenda) {
 }
 
 function itemFeito({ encomenda, registo }) {
-  return criarElemento('li', { className: 'resumo-dia__item' },
-    criarElemento('div', {},
-      criarElemento('strong', { textContent: `N.º ${encomenda.numero} · ${encomenda.cliente.nome}` }),
-      criarElemento('span', { textContent: registo.nota ?? '' }),
-      criarElemento('small', { textContent: `${formatarHora(registo.em)} · ${registo.por}` }),
-    ),
-    criarElemento('span', { className: 'etiqueta', 'data-estado': registo.estado, textContent: RESULTADOS[registo.estado] }),
-  );
+  return itemResumo(`N.º ${encomenda.numero} · ${encomenda.cliente.nome}`, registo.nota ?? '',
+    `${formatarHora(registo.em)} · ${registo.por}`, registo.estado);
 }
 
 function preencher(nome, itens) {

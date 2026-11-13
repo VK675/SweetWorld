@@ -121,19 +121,6 @@ const campoDia = document.querySelector('#dia');
 campoDia.value = hoje();
 campoDia.max = hoje();
 
-function itemResumo(titulo, texto, rodape, estado = '') {
-  const item = criarElemento('li', { className: 'resumo-dia__item' },
-    criarElemento('div', {},
-      criarElemento('strong', { textContent: titulo }),
-      criarElemento('span', { textContent: texto }),
-      criarElemento('small', { textContent: rodape }),
-    ));
-  if (estado) item.append(criarElemento('span', { className: 'etiqueta', 'data-estado': estado, textContent: RESULTADOS_ENTREGA[estado] }));
-  return item;
-}
-
-const RESULTADOS_ENTREGA = { entregue: 'Entregue', 'no-armazem': 'Armazém', remarcada: 'Remarcada' };
-
 function desenharDia() {
   const dia = campoDia.value || hoje();
 

@@ -10,7 +10,6 @@ const modeloPedido = document.querySelector('#modelo-pedido');
 const dialogoPronta = document.querySelector('#dialogo-pronta');
 const erroProducao = document.querySelector('#erro-producao');
 
-const momentoDaEntrega = (encomenda) => `${encomenda.entrega.data} ${encomenda.entrega.hora}`;
 const porPrazo = (a, b) => momentoDaEntrega(a).localeCompare(momentoDaEntrega(b));
 
 // "Hoje · 16:00", "Amanhã · 10:00" ou "seg., 16/11 · 10:00".

@@ -401,10 +401,21 @@ function gerarDadosDemo() {
     venda.numero = i + 1;
   });
 
-  return {
-    encomendas,
-    vendas,
-    stock: domingo(hojeData) ? {} : { [hojeData]: stockHoje },
-    sms,
-  };
+  // Nos dias passados, o stock foi o que se vendeu mais umas sobras:
+  // assim o resumo do dia do Gerente mostra "feitos, vendidos, sobraram" em qualquer data.
+  const stock = {};
+  for (const venda of vendas) {
+    const dia = dataLocal(new Date(venda.em));
+    if (dia === hojeData) continue;
+    stock[dia] ??= {};
+    for (const linha of venda.linhas) {
+      stock[dia][linha.produtoId] = (stock[dia][linha.produtoId] ?? 0) + linha.quantidade;
+    }
+  }
+  for (const doDia of Object.values(stock)) {
+    for (const id of Object.keys(doDia)) doDia[id] += entre(0, 3);
+  }
+  if (!domingo(hojeData)) stock[hojeData] = stockHoje;
+
+  return { encomendas, vendas, stock, sms };
 }
