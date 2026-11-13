@@ -10,7 +10,6 @@ const modeloEntrega = document.querySelector('#modelo-entrega');
 const dialogoRecebida = document.querySelector('#dialogo-recebida');
 const formRecebida = dialogoRecebida.querySelector('form');
 const dialogoFalhou = document.querySelector('#dialogo-falhou');
-const mensagem = document.querySelector('#mensagem');
 
 // Na lista «Feitas hoje» os estados vão abreviados.
 const RESULTADOS = { entregue: 'Entregue', 'no-armazem': 'Armazém', remarcada: 'Remarcada' };
@@ -124,16 +123,7 @@ function desenhar() {
   preencher('feitas', entregasNoDia().map(itemFeito));
 }
 
-/* ---------- Mensagem que aparece em baixo depois de cada ação ---------- */
-
-let esperaMensagem = null;
-
-function mostrarMensagem(texto) {
-  mensagem.textContent = texto;
-  mensagem.hidden = false;
-  clearTimeout(esperaMensagem);
-  esperaMensagem = setTimeout(() => { mensagem.hidden = true; }, 5000);
-}
+/* ---------- Ações nas janelas ---------- */
 
 // Faz a ação da janela: se correr bem, fecha-a e avisa; se não, mostra o erro lá dentro.
 function tentar(dialogo, acao) {

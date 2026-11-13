@@ -82,6 +82,19 @@ function mensagemDeErro(falha) {
     : falha.message;
 }
 
+// Aviso em baixo no ecrã (<p id="mensagem">) que desaparece sozinho ao fim de 5 segundos.
+let esperaMensagem = null;
+
+function mostrarMensagem(texto) {
+  const mensagem = document.querySelector('#mensagem');
+  mensagem.textContent = texto;
+  mensagem.hidden = false;
+  clearTimeout(esperaMensagem);
+  esperaMensagem = setTimeout(() => {
+    mensagem.hidden = true;
+  }, 5000);
+}
+
 /* ---------- Escolher outro dia de entrega (Balcão e Entregador) ---------- */
 
 // Usa o <dialog id="dialogo-dia"> da página. guardar(data, hora) grava a mudança
@@ -142,6 +155,11 @@ function preencherDetalhes(lista, pares) {
 // "2 × Bolo de chocolate"
 function descreverLinhas(registo) {
   return registo.linhas.map((linha) => `${linha.quantidade} × ${linha.nome}`).join(', ');
+}
+
+// "«Parabéns, Ana!» · velas 8 · sem frutos secos"
+function descreverPersonalizacao({ texto, velas, notas }) {
+  return [texto && `«${texto}»`, velas && `velas ${velas}`, notas].filter(Boolean).join(' · ');
 }
 
 // O que o cliente vê sobre a sua encomenda.

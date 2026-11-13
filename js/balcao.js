@@ -163,10 +163,6 @@ function encomendasAMostrar() {
   return pesquisarEncomendas(texto).sort((a, b) => momentoDaEntrega(b).localeCompare(momentoDaEntrega(a)));
 }
 
-function descreverPersonalizacao({ texto, velas, notas }) {
-  return [texto && `«${texto}»`, velas && `velas ${velas}`, notas].filter(Boolean).join(' · ');
-}
-
 function cartaoEncomenda(encomenda) {
   const cartao = modeloEncomenda.content.firstElementChild.cloneNode(true);
   const estado = cartao.querySelector('[data-campo="estado"]');

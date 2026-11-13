@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gerente — Doces &amp; Companhia</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Nunito:wght@400;600;700&display=swap">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍰</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/dados.js" defer></script>
+  <script src="js/dados-demo.js" defer></script>
+  <script src="js/comum.js" defer></script>
+  <script src="js/graficos.js" defer></script>
+  <script src="js/gerente.js" defer></script>
+</head>
+<body>
+  <header class="topo">
+    <div class="contentor topo__linha">
+      <a class="logo" href="index.html">Doces <span>&amp;</span> Companhia</a>
+      <div class="sessao">
+        <span class="sessao__quem"><span class="sessao__papel">Gerente · </span><strong data-sessao="nome"></strong></span>
+        <button class="botao botao--secundario botao--pequeno" type="button" data-sessao="sair">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="pagina pagina--equipa">
+    <div class="contentor">
+      <p class="sobretitulo" id="hoje"></p>
+      <h1>Gerente</h1>
+
+      <div class="separadores" role="tablist" aria-label="Secções do Gerente">
+        <button type="button" role="tab" id="sep-relatorios" data-separador="relatorios" aria-controls="painel-relatorios">Relatórios</button>
+        <button type="button" role="tab" id="sep-dia" data-separador="dia" aria-controls="painel-dia">Resumo do dia</button>
+        <button type="button" role="tab" id="sep-produtos" data-separador="produtos" aria-controls="painel-produtos">Produtos</button>
+        <button type="button" role="tab" id="sep-encomendas" data-separador="encomendas" aria-controls="painel-encomendas">Encomendas</button>
+        <button type="button" role="tab" id="sep-sms" data-separador="sms" aria-controls="painel-sms">SMS</button>
+      </div>
+
+      <!-- Relatórios do mês: encomendas e vendas na loja juntas -->
+      <section id="painel-relatorios" role="tabpanel" aria-labelledby="sep-relatorios">
+        <div class="filtros-linha">
+          <div class="campo">
+            <label for="mes">Mês</label>
+            <select id="mes"></select>
+          </div>
+        </div>
+
+        <p id="sem-vendas" class="aviso" hidden>Não há vendas neste mês.</p>
+        <div class="indicadores" id="indicadores"></div>
+
+        <div class="graficos">
+          <section class="cartao grafico" aria-labelledby="titulo-categorias">
+            <h2 id="titulo-categorias">Vendas por categoria</h2>
+            <p class="grafico__sub">Receita do mês: encomendas do site e vendas na loja.</p>
+            <div id="legenda-categorias"></div>
+            <div class="barras" id="grafico-categorias" role="group" aria-labelledby="titulo-categorias"></div>
+            <details class="tabela-grafico">
+              <summary>Ver em tabela</summary>
+              <div id="tabela-categorias"></div>
+            </details>
+          </section>
+
+          <section class="cartao grafico" aria-labelledby="titulo-produtos">
+            <h2 id="titulo-produtos">Produtos mais vendidos</h2>
+            <p class="grafico__sub">Unidades vendidas no mês (encomendas e loja).</p>
+            <div class="barras" id="grafico-produtos" role="group" aria-labelledby="titulo-produtos"></div>
+            <details class="tabela-grafico">
+              <summary>Ver em tabela</summary>
+              <div id="tabela-produtos"></div>
+            </details>
+          </section>
+
+          <section class="cartao grafico grafico--largo" aria-labelledby="titulo-liquido">
+            <h2 id="titulo-liquido">Rendimento líquido por dia</h2>
+            <p class="grafico__sub">Receita menos o custo de produção do que se vendeu.</p>
+            <div id="grafico-liquido" role="group" aria-labelledby="titulo-liquido"></div>
+            <details class="tabela-grafico">
+              <summary>Ver em tabela</summary>
+              <div id="tabela-liquido"></div>
+            </details>
+          </section>
+        </div>
+      </section>
+
+      <!-- Resumo de um dia: o que a Produção fez, o que o Entregador fez e a loja -->
+      <section id="painel-dia" role="tabpanel" aria-labelledby="sep-dia" hidden>
+        <div class="filtros-linha">
+          <div class="campo">
+            <label for="dia">Dia</label>
+            <input id="dia" type="date">
+          </div>
+        </div>
+        <p class="painel__intro">Faz-se sozinho a partir do que cada um regista: já ninguém tem de escrever relatórios no fim do dia.</p>
+        <div class="resumos">
+          <section class="cartao resumo-bloco" aria-labelledby="titulo-dia-producao">
+            <h2 id="titulo-dia-producao">Produção</h2>
+            <p class="resumo-bloco__numeros" id="numeros-producao"></p>
+            <ol class="resumo-dia" id="dia-producao"></ol>
+          </section>
+          <section class="cartao resumo-bloco" aria-labelledby="titulo-dia-entregas">
+            <h2 id="titulo-dia-entregas">Entregas</h2>
+            <p class="resumo-bloco__numeros" id="numeros-entregas"></p>
+            <ol class="resumo-dia" id="dia-entregas"></ol>
+          </section>
+          <section class="cartao resumo-bloco resumo-bloco--largo" aria-labelledby="titulo-dia-loja">
+            <h2 id="titulo-dia-loja">Loja</h2>
+            <p class="resumo-bloco__numeros" id="numeros-loja"></p>
+            <div id="dia-loja"></div>
+          </section>
+        </div>
+      </section>
+
+      <!-- Produtos de hoje (stock da loja) e catálogo -->
+      <section id="painel-produtos" role="tabpanel" aria-labelledby="sep-produtos" hidden>
+        <form id="form-dia" class="cartao produtos-hoje" novalidate>
+          <h2>Produtos de hoje na loja</h2>
+          <p class="painel__intro">Quantas unidades de cada produto há hoje. O Balcão vê o que resta e as vendas descontam sozinhas.</p>
+          <div class="quantidades" id="quantidades"></div>
+          <p id="aviso-dia" class="aviso" role="status" hidden></p>
+          <button class="botao" type="submit">Guardar produtos de hoje</button>
+        </form>
+
+        <section class="cartao" aria-labelledby="titulo-catalogo">
+          <div class="cabecalho-cartao">
+            <h2 id="titulo-catalogo">Catálogo</h2>
+            <button class="botao botao--pequeno" type="button" id="novo-produto">Novo produto</button>
+          </div>
+          <div class="catalogo" id="catalogo"></div>
+        </section>
+      </section>
+
+      <!-- Todas as encomendas, com o histórico de quem fez o quê -->
+      <section id="painel-encomendas" role="tabpanel" aria-labelledby="sep-encomendas" hidden>
+        <div class="filtros-linha">
+          <div class="campo procura">
+            <label for="procura">Procurar</label>
+            <input id="procura" type="search" placeholder="Número, nome ou telemóvel" autocomplete="off">
+          </div>
+          <div class="campo">
+            <label for="filtro-estado">Estado</label>
+            <select id="filtro-estado">
+              <option value="">Todos</option>
+            </select>
+          </div>
+        </div>
+        <h2 class="painel__titulo" id="titulo-encomendas"></h2>
+        <div class="registos" id="registos"></div>
+      </section>
+
+      <!-- SMS simulados -->
+      <section id="painel-sms" role="tabpanel" aria-labelledby="sep-sms" hidden>
+        <p class="painel__intro">Simulação: nenhum SMS sai a sério. Aqui fica o que cada cliente teria recebido.</p>
+        <h2 class="painel__titulo" id="titulo-sms"></h2>
+        <ol class="sms" id="lista-sms"></ol>
+      </section>
+
+      <aside class="cartao demo">
+        <p>Protótipo: os dados ficam guardados só neste navegador.</p>
+        <button class="botao botao--secundario botao--pequeno" type="button" id="repor">Repor dados de demonstração</button>
+      </aside>
+    </div>
+  </main>
+
+  <p class="aviso aviso--sucesso mensagem" id="mensagem" role="status" hidden></p>
+
+  <dialog class="dialogo dialogo--largo" id="dialogo-produto" aria-labelledby="titulo-produto">
+    <form class="formulario" novalidate>
+      <h2 id="titulo-produto"></h2>
+      <div class="campos">
+        <div class="campo" data-erro="Escreva o nome do produto.">
+          <label for="p-nome">Nome</label>
+          <input id="p-nome" name="nome" type="text" maxlength="60" required>
+          <p class="campo__erro"></p>
+        </div>
+        <div class="campos-2">
+          <div class="campo">
+            <label for="p-categoria">Categoria</label>
+            <select id="p-categoria" name="categoria" required></select>
+          </div>
+          <div class="campo">
+            <label for="p-foto">Foto</label>
+            <select id="p-foto" name="foto" required></select>
+          </div>
+        </div>
+        <div class="campo">
+          <label for="p-descricao">Descrição <span class="campo__opcional">(opcional)</span></label>
+          <textarea id="p-descricao" name="descricao" maxlength="160"></textarea>
+        </div>
+        <div class="campos-3">
+          <div class="campo" data-erro="Maior do que zero.">
+            <label for="p-preco">Preço (€)</label>
+            <input id="p-preco" name="preco" type="number" min="0.01" step="0.01" inputmode="decimal" required>
+            <p class="campo__erro"></p>
+          </div>
+          <div class="campo" data-erro="Zero ou mais.">
+            <label for="p-custo">Custo (€)</label>
+            <input id="p-custo" name="custo" type="number" min="0" step="0.01" inputmode="decimal" required>
+            <p class="campo__erro"></p>
+          </div>
+          <div class="campo" data-erro="Maior do que zero.">
+            <label for="p-peso">Peso (kg)</label>
+            <input id="p-peso" name="peso" type="number" min="0.01" step="0.01" inputmode="decimal" required>
+            <p class="campo__erro"></p>
+          </div>
+        </div>
+        <fieldset class="campo">
+          <legend>Onde se vende</legend>
+          <div class="opcoes opcoes--linha">
+            <label class="opcao"><input type="checkbox" name="porEncomenda"> Por encomenda</label>
+            <label class="opcao"><input type="checkbox" name="naLoja"> Na loja</label>
+          </div>
+        </fieldset>
+        <div class="opcoes opcoes--linha">
+          <label class="opcao"><input type="checkbox" name="personalizavel"> Leva texto e velas</label>
+          <label class="opcao"><input type="checkbox" name="ativo"> À venda</label>
+        </div>
+        <p class="aviso aviso--erro" data-campo="erro" role="alert" hidden></p>
+      </div>
+      <div class="acoes">
+        <button class="botao" type="submit">Guardar</button>
+        <button class="botao botao--secundario" type="button" data-acao="cancelar">Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>

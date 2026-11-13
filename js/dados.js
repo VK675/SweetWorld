@@ -866,6 +866,76 @@ function entregasNoDia(data = hoje()) {
     .sort((a, b) => a.registo.em.localeCompare(b.registo.em));
 }
 
+/* ---------- Relatórios do Gerente ---------- */
+
+// Encomendas (pela data do pagamento) e vendas ao balcão juntas, cada uma com o seu canal.
+function registosDeVenda() {
+  return [
+    ...listarEncomendas().map((e) => ({ canal: 'encomendas', em: e.pagamento.em, linhas: e.linhas })),
+    ...listarVendas().map((v) => ({ canal: 'loja', em: v.em, linhas: v.linhas })),
+  ];
+}
+
+// Os meses que têm vendas, do mais recente para o mais antigo: ['2026-11', '2026-10'].
+function mesesComVendas() {
+  const meses = new Set(registosDeVenda().map((r) => dataLocal(new Date(r.em)).slice(0, 7)));
+  meses.add(hoje().slice(0, 7));
+  return [...meses].sort().reverse();
+}
+
+// Cassie: "gráficos das vendas mensais por categoria, um gráfico dos produtos mais vendidos
+// e um gráfico dos rendimentos líquidos". mes: '2026-11'.
+// As contas fazem-se em cêntimos, para não aparecerem erros de arredondamento.
+function relatorioDoMes(mes) {
+  const cent = (euros) => Math.round(euros * 100);
+  const relatorio = {
+    receita: 0,
+    custo: 0,
+    encomendas: 0,
+    vendas: 0,
+    categorias: Object.fromEntries(Object.keys(CATEGORIAS).map((c) => [c, { encomendas: 0, loja: 0 }])),
+    produtos: {},
+    dias: {},
+  };
+
+  for (const registo of registosDeVenda()) {
+    const dia = dataLocal(new Date(registo.em));
+    if (!dia.startsWith(mes)) continue;
+    relatorio[registo.canal === 'loja' ? 'vendas' : 'encomendas'] += 1;
+    relatorio.dias[dia] ??= { receita: 0, custo: 0 };
+
+    for (const linha of registo.linhas) {
+      const receita = cent(linha.preco) * linha.quantidade;
+      const custo = cent(linha.custo) * linha.quantidade;
+      const produto = relatorio.produtos[linha.produtoId] ??= { nome: linha.nome, categoria: linha.categoria, unidades: 0, receita: 0 };
+      relatorio.receita += receita;
+      relatorio.custo += custo;
+      relatorio.categorias[linha.categoria][registo.canal] += receita;
+      produto.unidades += linha.quantidade;
+      produto.receita += receita;
+      relatorio.dias[dia].receita += receita;
+      relatorio.dias[dia].custo += custo;
+    }
+  }
+
+  // De volta a euros.
+  const euros = (c) => c / 100;
+  for (const categoria of Object.values(relatorio.categorias)) {
+    categoria.encomendas = euros(categoria.encomendas);
+    categoria.loja = euros(categoria.loja);
+  }
+  for (const produto of Object.values(relatorio.produtos)) produto.receita = euros(produto.receita);
+  for (const dia of Object.values(relatorio.dias)) {
+    dia.liquido = euros(dia.receita - dia.custo);
+    dia.receita = euros(dia.receita);
+    dia.custo = euros(dia.custo);
+  }
+  relatorio.liquido = euros(relatorio.receita - relatorio.custo);
+  relatorio.receita = euros(relatorio.receita);
+  relatorio.custo = euros(relatorio.custo);
+  return relatorio;
+}
+
 /* ---------- Produtos do dia e vendas ao balcão ---------- */
 
 function listarVendas() {
