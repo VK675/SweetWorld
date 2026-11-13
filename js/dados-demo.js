@@ -225,7 +225,7 @@ function gerarDadosDemo() {
   };
 
   const deixarNoArmazemDemo = (e, data, minutos) => {
-    e.levantarAte = somarDias(data, DIAS_ARMAZEM);
+    e.levantarAte = somarDiasUteis(data, DIAS_ARMAZEM);
     e.historico.push({
       em: momento(data, minutos),
       estado: 'no-armazem',

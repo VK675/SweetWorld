@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Produção — Doces &amp; Companhia</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Nunito:wght@400;600;700&display=swap">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍰</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/dados.js" defer></script>
+  <script src="js/dados-demo.js" defer></script>
+  <script src="js/comum.js" defer></script>
+  <script src="js/producao.js" defer></script>
+</head>
+<body>
+  <header class="topo">
+    <div class="contentor topo__linha">
+      <a class="logo" href="index.html">Doces <span>&amp;</span> Companhia</a>
+      <div class="sessao">
+        <span class="sessao__quem"><span class="sessao__papel">Produção · </span><strong data-sessao="nome"></strong></span>
+        <button class="botao botao--secundario botao--pequeno" type="button" data-sessao="sair">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Para a Susana: pouco texto e botões grandes. Cada encomenda anda da esquerda para a direita. -->
+  <main class="pagina pagina--equipa">
+    <div class="contentor">
+      <p class="sobretitulo" id="hoje"></p>
+      <h1>Produção</h1>
+      <p id="erro-producao" class="aviso aviso--erro aviso--topo" role="alert" hidden></p>
+
+      <div class="producao">
+        <section class="coluna" aria-labelledby="titulo-fazer">
+          <h2 class="coluna__titulo" id="titulo-fazer">Por fazer <span class="coluna__conta" id="conta-fazer"></span></h2>
+          <p class="coluna__vazia" id="vazia-fazer" hidden>Não há encomendas por fazer.</p>
+          <div class="coluna__lista" id="fazer"></div>
+          <details class="mais-tarde" id="mais-tarde" hidden>
+            <summary>Mais tarde <span class="coluna__conta" id="conta-mais-tarde"></span></summary>
+            <div class="coluna__lista" id="fazer-mais-tarde"></div>
+          </details>
+        </section>
+
+        <section class="coluna" aria-labelledby="titulo-fazendo">
+          <h2 class="coluna__titulo" id="titulo-fazendo">Em produção <span class="coluna__conta" id="conta-fazendo"></span></h2>
+          <p class="coluna__vazia" id="vazia-fazendo" hidden>Nenhuma encomenda em produção.</p>
+          <div class="coluna__lista" id="fazendo"></div>
+        </section>
+
+        <section class="coluna" aria-labelledby="titulo-prontas">
+          <h2 class="coluna__titulo" id="titulo-prontas">Prontas hoje <span class="coluna__conta" id="conta-prontas"></span></h2>
+          <p class="coluna__nota">É o resumo do dia: o Gerente vê-o sozinho, não é preciso escrever nada.</p>
+          <p class="coluna__vazia" id="vazia-prontas" hidden>Ainda nenhuma hoje.</p>
+          <ol class="prontas" id="prontas"></ol>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <dialog class="dialogo" id="dialogo-pronta" aria-labelledby="titulo-pronta">
+    <p class="sobretitulo">Encomenda pronta</p>
+    <h2 id="titulo-pronta">Etiqueta para a caixa</h2>
+    <div class="previa" data-campo="previa"></div>
+    <div class="acoes">
+      <button class="botao botao--grande" type="button" id="imprimir-etiqueta">Imprimir etiqueta</button>
+      <button class="botao botao--secundario" type="button" id="fechar-pronta">Fechar</button>
+    </div>
+  </dialog>
+
+  <template id="modelo-pedido">
+    <article class="pedido">
+      <div class="pedido__topo">
+        <span class="pedido__prazo"></span>
+        <span class="pedido__numero"></span>
+      </div>
+      <div class="pedido__produto">
+        <img class="pedido__foto" src="" alt="" width="900" height="600">
+        <div>
+          <p class="pedido__categoria"></p>
+          <h3 class="pedido__nome"></h3>
+        </div>
+      </div>
+      <dl class="pedido__extra"></dl>
+      <p class="pedido__quem"></p>
+      <button class="botao botao--largo botao--grande" type="button"></button>
+    </article>
+  </template>
+</body>
+</html>

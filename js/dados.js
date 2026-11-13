@@ -68,6 +68,7 @@ const CONCELHOS = [
 ];
 
 // Michael: a encomenda que não foi entregue espera 3 dias no armazém.
+// Contam só os dias em que a loja abre (segunda a sábado).
 const DIAS_ARMAZEM = 3;
 
 // António: quer um aviso por SMS "com um ou dois dias de antecedência".
@@ -261,7 +262,7 @@ const PRODUTOS_INICIAIS = [
 /* ---------- Armazenamento ---------- */
 
 // Quando o formato dos dados muda, sobe-se a versão e os dados antigos são substituídos.
-const VERSAO_DADOS = '2';
+const VERSAO_DADOS = '3';
 
 const CHAVES = {
   versao: 'dc.versao',
@@ -349,6 +350,16 @@ function somarDias(data, dias) {
   const dia = new Date(`${data}T12:00`);
   dia.setDate(dia.getDate() + dias);
   return dataLocal(dia);
+}
+
+// Como o somarDias, mas salta os domingos: somarDiasUteis('2026-11-13', 3) → '2026-11-17'
+function somarDiasUteis(data, dias) {
+  let dia = data;
+  for (let i = 0; i < dias; i += 1) {
+    dia = somarDias(dia, 1);
+    if (new Date(`${dia}T12:00`).getDay() === 0) dia = somarDias(dia, 1);
+  }
+  return dia;
 }
 
 // Quantos dias vão de uma data até outra (negativo se a segunda for anterior).
@@ -797,10 +808,10 @@ function registarEntrega(numero, recebidaPor) {
   });
 }
 
-// Entregador: não entregue, fica no armazém. O cliente é avisado por SMS e tem 3 dias para a levantar.
+// Entregador: não entregue, fica no armazém. O cliente é avisado por SMS e tem 3 dias úteis para a levantar.
 function deixarNoArmazem(numero) {
   const encomenda = mudarEstado(numero, 'no-armazem', (e) => {
-    e.levantarAte = somarDias(hoje(), DIAS_ARMAZEM);
+    e.levantarAte = somarDiasUteis(hoje(), DIAS_ARMAZEM);
     return { nota: `O cliente pode levantar até ${formatarDia(e.levantarAte)}` };
   });
   juntarSms([smsArmazem(encomenda, new Date().toISOString())]);
@@ -826,9 +837,23 @@ function alterarDataEntrega(numero, data, hora) {
   return encomenda;
 }
 
-// No armazém há mais de 3 dias sem ser levantada.
+// No armazém, já passaram os 3 dias úteis e ninguém a levantou.
 function prazoTerminado(encomenda) {
   return encomenda.estado === 'no-armazem' && encomenda.levantarAte < hoje();
+}
+
+// O registo do histórico em que a encomenda passou a este estado (o mais recente), ou null.
+function registoDoEstado(encomenda, estado) {
+  return encomenda.historico.findLast((registo) => registo.estado === estado) ?? null;
+}
+
+// As encomendas que a Produção acabou num dia, com quem as fez e a que horas.
+// Susana fazia este relatório à mão no fim do dia ("pedidos concluídos e para que cliente").
+function prontasNoDia(data = hoje()) {
+  return listarEncomendas()
+    .map((encomenda) => ({ encomenda, registo: registoDoEstado(encomenda, 'pronta') }))
+    .filter(({ registo }) => registo !== null && dataLocal(new Date(registo.em)) === data)
+    .sort((a, b) => a.registo.em.localeCompare(b.registo.em));
 }
 
 /* ---------- Produtos do dia e vendas ao balcão ---------- */
